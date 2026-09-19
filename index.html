@@ -184,10 +184,19 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .labnav{position:sticky;top:0;z-index:5;height:50px;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   font-size:15px;font-weight:600;color:#FF3B30;border-bottom:.5px solid var(--sep2)}
-.labpad{padding:0 20px}
-.labtitle{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1.08;margin:22px 0 0}
-.labtitle em{font-style:normal;color:#FF453A}
-.labitems{font-size:14px;color:var(--lbl2);margin:10px 0 0;line-height:1.4}
+.redopening{min-height:calc(100dvh - 50px);padding:clamp(38px,10vh,84px) 20px 42px;border-bottom:1px solid rgba(255,69,58,.38)}
+.redheadline{font-size:clamp(44px,14vw,68px);font-weight:800;letter-spacing:-.062em;line-height:.88;margin:0;text-transform:uppercase}
+.redheadline span{display:block}
+.redheadline span:last-child{color:#FF453A}
+.redkcal{margin:clamp(52px,12vh,92px) 0 0;color:#FF453A;font-variant-numeric:tabular-nums}
+.redkcal .n{display:block;font-size:clamp(88px,27vw,136px);font-weight:800;letter-spacing:-.075em;line-height:.72}
+.redkcal .u{display:block;font-size:17px;font-weight:700;letter-spacing:.18em;line-height:1;margin:18px 0 0}
+.redorder{font-size:18px;font-weight:600;line-height:1.45;overflow-wrap:anywhere;margin:42px 0 0;max-width:480px}
+.redfacts{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px;margin:42px 0 0;padding:28px 0 0;border-top:1px solid rgba(255,255,255,.2)}
+.redfacts div{min-width:0}
+.redfacts .l{display:block;font-size:11px;font-weight:700;letter-spacing:.09em;line-height:1.25;color:var(--lbl2);text-transform:uppercase;margin-top:7px}
+.redfacts .v{display:block;font-size:clamp(25px,8vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+@media (min-width:480px){.redopening{padding-left:28px;padding-right:28px}.redfacts{grid-template-columns:repeat(4,1fr);gap:14px}.redfacts .v{font-size:27px}}
 .lcard{background:var(--elev);border-radius:20px;padding:18px;margin:14px 16px 0}
 .lsect{font-size:22px;font-weight:700;letter-spacing:-.022em;margin:30px 20px 2px}
 .lsect+.lsub{margin:0 20px 10px;font-size:13.5px;color:var(--lbl2);line-height:1.4}
@@ -496,6 +505,7 @@ const $=s=>document.querySelector(s);
 const fmt=n=>n.toLocaleString('de-DE',{maximumFractionDigits:0});
 const eur=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
 const eur0=n=>Math.round(n).toLocaleString('de-DE')+' €';
+const grams=n=>n.toLocaleString('de-DE',{minimumFractionDigits:Number.isInteger(n)?0:1,maximumFractionDigits:1})+' g';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const daysSince=d=>validDate(d)?Math.floor((Date.parse(`${today()}T00:00:00Z`)-Date.parse(`${d}T00:00:00Z`))/864e5):0;
 const streak=()=>{const t=today();let l=null;S.relapses.forEach(d=>{if(validDate(d)&&d<=t&&(!l||d>l))l=d;});const n=daysSince(l||S.start);return Number.isFinite(n)?Math.max(0,n):0;};
@@ -605,8 +615,6 @@ function showBefund(){
   $('#confirm').classList.remove('on');
   const r={kcal:t.kcal/REF.kcal,fat:t.fat/REF.fat,sat:t.sat/REF.sat,sug:t.sug/REF.sug,salt:t.salt/REF.salt};
   const f=FACTS[Math.floor(Math.random()*FACTS.length)];
-  const worst=Object.entries(r).sort((a,b)=>b[1]-a[1])[0][0];
-  const HEAD={sat:'Das hier <em>verstopft</em> dich.',salt:'Das hier <em>drückt</em> auf deine Gefäße.',sug:'Das hier <em>überflutet</em> dein Blut.',fat:'Das hier <em>bleibt</em> in dir.',kcal:'Das hier <em>hängt</em> an dir.'};
   const score=.35*cap(r.sat)+.25*cap(r.salt)+.25*cap(r.sug)+.15*cap(r.kcal);
   const drop=Math.min(85,Math.round(score*45)), bpm=Math.round(62+drop*.95);
   const age=new Date().getFullYear()-(S.year||1983), s=streak();
@@ -616,10 +624,17 @@ function showBefund(){
   $('#labinner').innerHTML=`
     ${reduced?'':'<div class="flash"><span>STOPP.</span></div>'}
     <div class="labnav">Befund</div>
-    <div class="labpad">
-      <h1 class="labtitle">${HEAD[worst]}</h1>
-      <p class="labitems">${order.map(i=>i.n).join(' · ')}<br>${fmt(t.kcal)} kcal · ${eur(t.p)}</p>
-    </div>
+    <section class="redopening" aria-labelledby="redheadline">
+      <h1 class="redheadline" id="redheadline"><span>Das hier</span><span>wolltest du</span><span>gerade essen.</span></h1>
+      <div class="redkcal" aria-label="${fmt(t.kcal)} Kilokalorien"><span class="n" aria-hidden="true">${fmt(t.kcal)}</span><span class="u" aria-hidden="true">KCAL</span></div>
+      <p class="redorder">${order.map(i=>esc(i.n)).join(' · ')}</p>
+      <div class="redfacts" role="list" aria-label="Nährwerte der Bestellung">
+        <div role="listitem"><span class="v">${eur(t.p)}</span><span class="l">Preis</span></div>
+        <div role="listitem"><span class="v">${grams(t.sat)}</span><span class="l">Gesättigtes Fett</span></div>
+        <div role="listitem"><span class="v">${grams(t.sug)}</span><span class="l">Zucker</span></div>
+        <div role="listitem"><span class="v">${grams(t.salt)}</span><span class="l">Salz</span></div>
+      </div>
+    </section>
     ${patternHit()}
 
     <div class="lcard">
