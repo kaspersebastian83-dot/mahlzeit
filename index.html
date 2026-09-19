@@ -427,7 +427,8 @@ const slot=h=>h<11?'vormittags':h<15?'mittags':h<19?'nachmittags':h<23?'abends':
 const MS=[{d:7,l:'Eine Woche'},{d:30,l:'Ein Monat'},{d:90,l:'Ein Quartal'},{d:365,l:'Ein Jahr'}];
 
 const KEY='mahlzeit.v1';
-const today=()=>new Date().toISOString().slice(0,10);
+const localDate=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const today=()=>localDate(new Date());
 let S={weight:80,year:1983,why:'',letter:'',reward:'',rate:7,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -731,7 +732,7 @@ function renderStats(){const s=streak();
   $('#sStreak').textContent=s;$('#sStreakL').textContent=s===1?'Tag ohne':'Tage ohne';
   $('#sSaves').textContent=S.saves;$('#sRecord').textContent=Math.max(S.record,s);
   $('#sKcal').textContent=fmt(S.kcalAvoided);$('#sEuro').textContent=eur(S.euroSaved);
-  let h='';for(let i=29;i>=0;i--){const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);h+=`<i class="${S.relapses.includes(d)?'bad ':''}${i===0?'today':''}" title="${d}"></i>`;}
+  let h='';for(let i=29;i>=0;i--){const date=new Date();date.setDate(date.getDate()-i);const d=localDate(date);h+=`<i class="${S.relapses.includes(d)?'bad ':''}${i===0?'today':''}" title="${d}"></i>`;}
   $('#strip').innerHTML=h;renderPattern();}
 function renderPattern(){
   const a=analyse(),el=$('#pat');
