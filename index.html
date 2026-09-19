@@ -156,7 +156,24 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .trig{background:var(--sys-elev);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:500;display:flex;gap:8px;align-items:center;transition:transform .12s}
 .trig:active{transform:scale(.95)}
 
-/* ══════════ BEFUND (dark) ══════════ */
+/* Bestätigung */
+.confirm{position:fixed;inset:0;z-index:80;display:none;overflow-y:auto;background:#141416;color:#fff}
+.confirm.on{display:block;animation:confirmIn .28s ease-out}
+@keyframes confirmIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+.confirminner{width:100%;max-width:540px;min-height:100dvh;margin:0 auto;padding:calc(44px + env(safe-area-inset-top)) 20px calc(24px + var(--safe-b));display:flex;flex-direction:column;justify-content:center}
+.confirmcopy{margin:auto 0}
+.confirmtitle{font-size:clamp(48px,16vw,76px);font-weight:700;letter-spacing:-.055em;line-height:.98;margin:0}
+.confirmsub{max-width:420px;font-size:18px;line-height:1.45;color:rgba(255,255,255,.68);margin:22px 0 0}
+.confirmorder{margin:48px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.16)}
+.confirmitems{font-size:16px;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.confirmtotals{font-size:14px;line-height:1.4;color:rgba(255,255,255,.54);margin:8px 0 0;font-variant-numeric:tabular-nums}
+.confirmacts{display:flex;flex-direction:column;gap:12px;padding-top:44px}
+.confirmprimary,.confirmsecondary{width:100%;min-height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:600;padding:12px 16px;transition:transform .12s,opacity .12s}
+.confirmprimary{background:#fff;color:#111}
+.confirmsecondary{background:rgba(255,255,255,.1);color:#fff}
+.confirmprimary:active,.confirmsecondary:active{transform:scale(.975);opacity:.86}
+
+/* Befund */
 .lab{position:fixed;inset:0;z-index:60;display:none;overflow-y:auto;background:#000;color:#fff;
   --lbl2:rgba(235,235,245,.6);--lbl3:rgba(235,235,245,.3);--elev:#1C1C1E;--elev2:#2C2C2E;--sep2:rgba(84,84,88,.55)}
 .lab.on{display:block}
@@ -315,6 +332,22 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 </div>
 <div class="toast" id="toast"></div>
 
+<section class="confirm" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirmtitle" aria-describedby="confirmsub">
+  <div class="confirminner">
+    <div class="confirmcopy">
+      <h1 class="confirmtitle" id="confirmtitle">Wirklich?</h1>
+      <p class="confirmsub" id="confirmsub">Du bist gerade dabei, das hier tatsächlich zu essen.</p>
+      <div class="confirmorder" aria-label="Deine Bestellung">
+        <p class="confirmitems" id="confirmitems"></p>
+        <p class="confirmtotals" id="confirmtotals"></p>
+      </div>
+    </div>
+    <div class="confirmacts">
+      <button class="confirmprimary" id="confirmcontinue">Zeig mir, was das bedeutet.</button>
+      <button class="confirmsecondary" id="confirmback">Zurück zur Bestellung</button>
+    </div>
+  </div>
+</section>
 <section class="lab" id="lab" aria-live="polite"><div class="labinner" id="labinner"></div></section>
 <section class="win" id="win" aria-live="polite"><div class="wininner" id="wininner"></div></section>
 
@@ -323,7 +356,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
   <div class="sheethead"><h2>Bestellung</h2><button id="cartclose">Fertig</button></div>
   <p class="sheetsub">Vor dem Absenden kommt der Befund.</p>
   <div class="group" id="cartlist"></div>
-  <div class="sheetpad" style="margin-top:18px"><button class="btn" id="tobefund" style="width:100%">Befund ansehen</button></div>
+  <div class="sheetpad" style="margin-top:18px"><button class="btn" id="tobefund" style="width:100%">Bestellen</button></div>
 </div></div>
 
 <div class="sheet" id="trigsheet"><div class="sheetbody">
@@ -439,12 +472,13 @@ S.msDone=Array.isArray(S.msDone)?[...new Set(S.msDone.filter(d=>MS.some(m=>m.d==
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 if(loadedState)save();
 const FLOW=Object.freeze({
-  BROWSING:'BROWSING',CART_REVIEW:'CART_REVIEW',RED_ROOM:'RED_ROOM',CRAVING_WAIT:'CRAVING_WAIT',
+  BROWSING:'BROWSING',CART_REVIEW:'CART_REVIEW',CONFIRMATION:'CONFIRMATION',RED_ROOM:'RED_ROOM',CRAVING_WAIT:'CRAVING_WAIT',
   DECISION:'DECISION',GREEN_ROOM:'GREEN_ROOM',REFLECTION:'REFLECTION'
 });
 const FLOW_TRANSITIONS={
   [FLOW.BROWSING]:[FLOW.CART_REVIEW],
-  [FLOW.CART_REVIEW]:[FLOW.BROWSING,FLOW.RED_ROOM],
+  [FLOW.CART_REVIEW]:[FLOW.BROWSING,FLOW.CONFIRMATION],
+  [FLOW.CONFIRMATION]:[FLOW.CART_REVIEW,FLOW.RED_ROOM],
   [FLOW.RED_ROOM]:[FLOW.CRAVING_WAIT],
   [FLOW.CRAVING_WAIT]:[FLOW.DECISION,FLOW.REFLECTION],
   [FLOW.DECISION]:[FLOW.REFLECTION],
@@ -457,7 +491,7 @@ function transitionFlow(nextState){
   flow.state=nextState;
   if(nextState===FLOW.BROWSING)flow={state:FLOW.BROWSING,outcome:null,order:null,waitDeadline:null,outcomeCommitted:false};
 }
-let cart=[],waitTimer=null;const WAIT=60;
+let cart=[],waitTimer=null,cartDismissBlockedUntil=0;const WAIT=60;
 const $=s=>document.querySelector(s);
 const fmt=n=>n.toLocaleString('de-DE',{maximumFractionDigits:0});
 const eur=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
@@ -565,10 +599,10 @@ function timeline(t,r){
 }
 
 function showBefund(){
-  if(flow.state!==FLOW.CART_REVIEW)return;
-  flow.order=snapshotOrder(cart);
+  if(flow.state!==FLOW.CONFIRMATION||!flow.order)return;
   transitionFlow(FLOW.RED_ROOM);
   const order=flow.order,t=totals(order);
+  $('#confirm').classList.remove('on');
   const r={kcal:t.kcal/REF.kcal,fat:t.fat/REF.fat,sat:t.sat/REF.sat,sug:t.sug/REF.sug,salt:t.salt/REF.salt};
   const f=FACTS[Math.floor(Math.random()*FACTS.length)];
   const worst=Object.entries(r).sort((a,b)=>b[1]-a[1])[0][0];
@@ -775,22 +809,46 @@ function showWin(t){
 }
 
 /* ── sheets & wiring ── */
-const syncBodyScroll=()=>{document.body.style.overflow=document.querySelector('.sheet.on')||$('#lab').classList.contains('on')||$('#win').classList.contains('on')?'hidden':'';};
+const syncBodyScroll=()=>{document.body.style.overflow=document.querySelector('.sheet.on')||$('#confirm').classList.contains('on')||$('#lab').classList.contains('on')||$('#win').classList.contains('on')?'hidden':'';};
 const canOpenSheet=i=>{
-  if(i==='#trigsheet')return flow.state===FLOW.REFLECTION&&$('#lab').classList.contains('on')&&!$('#win').classList.contains('on');
-  if(i==='#cartsheet')return flow.state===FLOW.CART_REVIEW&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
-  return ['#statssheet','#setsheet'].includes(i)&&flow.state===FLOW.BROWSING&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
+  if(i==='#trigsheet')return flow.state===FLOW.REFLECTION&&$('#lab').classList.contains('on')&&!$('#confirm').classList.contains('on')&&!$('#win').classList.contains('on');
+  if(i==='#cartsheet')return flow.state===FLOW.CART_REVIEW&&!$('#confirm').classList.contains('on')&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
+  return ['#statssheet','#setsheet'].includes(i)&&flow.state===FLOW.BROWSING&&!$('#confirm').classList.contains('on')&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
 };
 const openSheet=i=>{const sh=$(i);if(!sh||!canOpenSheet(i))return false;if(i!=='#trigsheet')document.querySelectorAll('.sheet.on').forEach(x=>x.classList.remove('on'));sh.classList.add('on');syncBodyScroll();return true;};
 const closeSheet=(i,requiredCompletion=false)=>{const sh=$(i);if(!sh||i==='#trigsheet'&&flow.state===FLOW.REFLECTION&&!requiredCompletion){syncBodyScroll();return false;}sh.classList.remove('on');syncBodyScroll();return true;};
 const renderCart=()=>{$('#cartlist').innerHTML=cart.map((i,ix)=>`<div class="cell"><span class="ico">${i.e}</span><span class="tx"><b>${i.n}</b><span>${eur(i.p)} · ${i.kcal} kcal</span></span><button class="add" data-ix="${ix}" aria-label="entfernen" style="color:var(--red)">−</button></div>`).join('');};
 const openCart=()=>{if(flow.state!==FLOW.BROWSING)return;renderCart();transitionFlow(FLOW.CART_REVIEW);if(!openSheet('#cartsheet'))transitionFlow(FLOW.BROWSING);};
 const closeCart=()=>{closeSheet('#cartsheet');if(flow.state===FLOW.CART_REVIEW)transitionFlow(FLOW.BROWSING);};
-document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target!==sh)return;switch(sh.id){case 'cartsheet':closeCart();break;case 'statssheet':case 'setsheet':closeSheet('#'+sh.id);break;case 'trigsheet':if(flow.state!==FLOW.REFLECTION)closeSheet('#trigsheet');break;}}));
+const showConfirmation=()=>{
+  if(flow.state!==FLOW.CART_REVIEW||!cart.length)return;
+  flow.order=snapshotOrder(cart);
+  transitionFlow(FLOW.CONFIRMATION);
+  closeSheet('#cartsheet');
+  const t=totals(flow.order);
+  $('#confirmitems').textContent=flow.order.map(i=>i.n).join(' · ');
+  $('#confirmtotals').textContent=`${fmt(t.kcal)} kcal · ${eur(t.p)}`;
+  $('#confirm').classList.add('on');
+  $('#confirm').scrollTop=0;
+  syncBodyScroll();
+  $('#confirmcontinue').focus();
+};
+const returnToCart=()=>{
+  if(flow.state!==FLOW.CONFIRMATION)return;
+  transitionFlow(FLOW.CART_REVIEW);
+  $('#confirm').classList.remove('on');
+  flow.order=null;flow.outcome=null;flow.outcomeCommitted=false;flow.waitDeadline=null;
+  renderCart();
+  cartDismissBlockedUntil=Date.now()+400;
+  if(openSheet('#cartsheet'))$('#tobefund').focus();
+};
+document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target!==sh)return;switch(sh.id){case 'cartsheet':if(Date.now()>=cartDismissBlockedUntil)closeCart();break;case 'statssheet':case 'setsheet':closeSheet('#'+sh.id);break;case 'trigsheet':if(flow.state!==FLOW.REFLECTION)closeSheet('#trigsheet');break;}}));
 $('#cartbtn').onclick=openCart;
 $('#cartlist').addEventListener('click',e=>{const b=e.target.closest('.add');if(!b)return;cart.splice(+b.dataset.ix,1);updateBar();tap(8);if(!cart.length){closeCart();return;}renderCart();});
 $('#cartclose').onclick=closeCart;
-$('#tobefund').onclick=()=>{if(flow.state!==FLOW.CART_REVIEW)return;closeSheet('#cartsheet');showBefund();};
+$('#tobefund').onclick=showConfirmation;
+$('#confirmcontinue').onclick=showBefund;
+$('#confirmback').onclick=returnToCart;
 function renderStats(){const s=streak();
   $('#sStreak').textContent=s;$('#sStreakL').textContent=s===1?'Tag ohne':'Tage ohne';
   $('#sSaves').textContent=S.saves;$('#sRecord').textContent=Math.max(S.record,s);
@@ -815,7 +873,16 @@ $('#setclose').onclick=()=>{const v=parseFloat($('#wKg').value);if(v>=35&&v<=250
 $('#resetall').onclick=()=>{if(!confirm('Streak, Bilanz, Muster und Verlauf werden gelöscht. Sicher?'))return;
   S={weight:S.weight,year:S.year,why:S.why,letter:S.letter,reward:S.reward,rate:S.rate,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
   save();updatePill();closeSheet('#setsheet');toast('Zurückgesetzt.');};
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;switch(flow.state){case FLOW.BROWSING:['#trigsheet','#statssheet','#setsheet'].forEach(i=>closeSheet(i));break;case FLOW.CART_REVIEW:closeCart();break;}});
+document.addEventListener('keydown',e=>{
+  if(flow.state===FLOW.CONFIRMATION&&e.key==='Tab'){
+    const buttons=[$('#confirmcontinue'),$('#confirmback')],at=buttons.indexOf(document.activeElement);
+    if(e.shiftKey&&at<=0){e.preventDefault();buttons[1].focus();}
+    else if(!e.shiftKey&&(at===buttons.length-1||at<0)){e.preventDefault();buttons[0].focus();}
+    return;
+  }
+  if(e.key!=='Escape')return;
+  switch(flow.state){case FLOW.BROWSING:['#trigsheet','#statssheet','#setsheet'].forEach(i=>closeSheet(i));break;case FLOW.CART_REVIEW:closeCart();break;}
+});
 renderTabs();renderList();updateBar();updatePill();
 </script>
 </body>
