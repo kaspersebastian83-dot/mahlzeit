@@ -197,130 +197,64 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .redfacts .l{display:block;font-size:11px;font-weight:700;letter-spacing:.09em;line-height:1.25;color:var(--lbl2);text-transform:uppercase;margin-top:7px}
 .redfacts .v{display:block;font-size:clamp(25px,8vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 @media (min-width:480px){.redopening{padding-left:28px;padding-right:28px}.redfacts{grid-template-columns:repeat(4,1fr);gap:14px}.redfacts .v{font-size:27px}}
-.reddose{padding:clamp(72px,14vh,116px) 20px 88px;border-bottom:1px solid rgba(255,69,58,.38);overflow:hidden}
-.dosehead{margin:0;font-size:clamp(50px,15vw,82px);font-weight:800;letter-spacing:-.065em;line-height:.84;text-transform:uppercase}
-.dosehead span{display:block}.dosehead span:last-child{color:#FF453A}
-.dosesub{max-width:400px;margin:28px 0 0;font-size:18px;line-height:1.45;color:rgba(255,255,255,.7)}
-.dosecontext{margin:82px 0 0;font-size:11px;font-weight:700;letter-spacing:.14em;line-height:1.45;color:var(--lbl2);text-transform:uppercase}
-.doseitem{padding:56px 0 64px;border-bottom:1px solid rgba(255,255,255,.2)}
-.dosename{margin:0;font-size:14px;font-weight:700;letter-spacing:.12em;line-height:1.3;text-transform:uppercase}
-.dosegrams{margin:28px 0 0;font-size:clamp(30px,9vw,42px);font-weight:650;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums}
-.dosepct{margin:14px 0 0;font-size:clamp(64px,22vw,112px);font-weight:800;letter-spacing:-.075em;line-height:.86;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.scene{border-bottom:1px solid rgba(255,69,58,.3)}
+.sceneeyebrow{margin:0 0 24px;font-size:12px;font-weight:700;letter-spacing:.16em;color:#FF6B5E;text-transform:uppercase}
+.reddose{min-height:80dvh;padding:clamp(58px,11vh,94px) 20px 54px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.dosehead,.patternhead,.anatomyhead,.decisionhead{margin:0;font-size:clamp(42px,13vw,70px);font-weight:800;letter-spacing:-.062em;line-height:.88;text-transform:uppercase}
+.dosehead span{display:block}.dosehead span:last-child,.patternhead strong{color:#FF453A}
+.dosesub{max-width:400px;margin:22px 0 0;font-size:16px;line-height:1.45;color:var(--lbl2)}
+.dosegrid{display:grid;gap:0;margin:clamp(38px,7vh,64px) 0 0;border-top:1px solid rgba(255,255,255,.2)}
+.doseitem{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.2)}
+.dosename{margin:0;font-size:12px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
+.dosegrams{margin:6px 0 0;font-size:13px;color:var(--lbl2);font-variant-numeric:tabular-nums}
+.dosepct{grid-row:1/3;grid-column:2;margin:0;font-size:clamp(48px,15vw,78px);font-weight:800;letter-spacing:-.07em;line-height:.8;font-variant-numeric:tabular-nums;white-space:nowrap}
 .dosepct.high{color:#FF453A}
-.doseref{margin:20px 0 0;font-size:14px;line-height:1.4;color:var(--lbl2)}
-.doseend{margin:78px 0 0;font-size:clamp(37px,12vw,58px);font-weight:800;letter-spacing:-.05em;line-height:.92;text-transform:uppercase}
-.doseattr{margin:22px 0 0;font-size:11px;line-height:1.4;color:var(--lbl3)}
-@media (min-width:480px){.reddose{padding-left:28px;padding-right:28px}}
-.redpattern{padding:clamp(86px,17vh,140px) 20px clamp(82px,16vh,126px);border-bottom:1px solid rgba(255,69,58,.38);overflow:hidden}
-.patternhead{margin:0;font-size:clamp(46px,14vw,76px);font-weight:800;letter-spacing:-.065em;line-height:.86;text-transform:uppercase}
-.patternhead span{display:block}.patternhead strong{display:block;color:#FF453A;font-weight:800}
-.patternintro{margin:34px 0 0;max-width:390px;font-size:17px;line-height:1.45;color:var(--lbl2)}
-.patternfrequency{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:70px -20px 0;border-top:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.2)}
-.patternfrequency div{min-width:0;padding:25px 20px 27px;background:#000}
-.patternfrequency .n{display:block;font-size:clamp(54px,17vw,88px);font-weight:800;letter-spacing:-.08em;line-height:.78;color:#FF453A;font-variant-numeric:tabular-nums}
-.patternfrequency .l{display:block;margin-top:16px;font-size:11px;font-weight:700;letter-spacing:.12em;line-height:1.3;color:var(--lbl2);text-transform:uppercase}
-.annualcontext{margin:66px 0 0;font-size:11px;font-weight:700;letter-spacing:.14em;line-height:1.45;color:var(--lbl2);text-transform:uppercase}
-.annualorders{margin:20px 0 0;padding-bottom:38px;border-bottom:1px solid rgba(255,255,255,.2)}
-.annualorders .n{display:block;font-size:clamp(96px,30vw,154px);font-weight:800;letter-spacing:-.085em;line-height:.7;color:#FF453A;font-variant-numeric:tabular-nums}
-.annualorders .l{display:block;margin-top:22px;font-size:14px;font-weight:700;letter-spacing:.14em;line-height:1.3;text-transform:uppercase}
-.annualtotals{margin:0;padding:0;list-style:none}
-.annualtotals li{padding:27px 0;border-bottom:1px solid rgba(255,255,255,.2)}
-.annualtotals .n{display:block;font-size:clamp(38px,11vw,58px);font-weight:750;letter-spacing:-.055em;line-height:.9;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.annualtotals .l{display:block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.12em;line-height:1.3;color:var(--lbl2);text-transform:uppercase}
-.patternend{margin:68px 0 0;font-size:clamp(32px,10vw,51px);font-weight:800;letter-spacing:-.055em;line-height:.92;text-transform:uppercase}
-.patternnote{margin:20px 0 0;font-size:11px;line-height:1.45;color:var(--lbl3)}
-@media (min-width:480px){.redpattern{padding-left:28px;padding-right:28px}.patternfrequency{margin-left:-28px;margin-right:-28px}.patternfrequency div{padding-left:28px;padding-right:28px}.annualtotals{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}.annualtotals li:nth-last-child(-n+2){border-bottom:0}}
-.compounder{padding:clamp(82px,16vh,126px) 20px clamp(88px,17vh,138px);border-bottom:1px solid rgba(255,69,58,.38);overflow:hidden}
-.compounderhead{margin:0;font-size:clamp(48px,15vw,78px);font-weight:800;letter-spacing:-.07em;line-height:.84;text-transform:uppercase}
-.compoundersub{margin:28px 0 0;font-size:17px;line-height:1.45;color:var(--lbl2)}
-.compounderlist{margin:clamp(70px,13vh,108px) 0 0}
-.compounderstep{padding:0 0 clamp(54px,11vh,92px);border-bottom:1px solid rgba(255,255,255,.2)}
-.compounderstep+.compounderstep{padding-top:clamp(48px,10vh,82px)}
-.compounderstep:last-child{padding-bottom:0;border-bottom:0}
-.compounderyear{margin:0;font-size:12px;font-weight:700;letter-spacing:.16em;line-height:1.3;color:var(--lbl2);text-transform:uppercase}
-.compounderorders{margin:18px 0 0;font-size:clamp(54px,17vw,88px);font-weight:800;letter-spacing:-.08em;line-height:.78;font-variant-numeric:tabular-nums}
-.compounderorders span{display:block;margin-top:15px;font-size:11px;font-weight:700;letter-spacing:.13em;line-height:1.3;color:var(--lbl2);text-transform:uppercase}
-.compoundervalues{margin:34px 0 0;padding:0;list-style:none;display:grid;gap:21px}
-.compoundervalues li{min-width:0}
-.compoundervalues .n{display:block;font-size:clamp(34px,10.5vw,56px);font-weight:750;letter-spacing:-.06em;line-height:.88;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.compoundervalues .l{display:block;margin-top:9px;font-size:10.5px;font-weight:700;letter-spacing:.12em;line-height:1.3;color:var(--lbl2);text-transform:uppercase}
-.compounderstep.y5 .compoundervalues .n{font-size:clamp(39px,12vw,63px)}
-.compounderstep.y10 .compoundervalues .n{font-size:clamp(44px,13.5vw,72px)}
-.compounderstep.y20{margin:0 -20px;padding-left:20px;padding-right:20px;background:linear-gradient(180deg,rgba(255,69,58,.09),rgba(255,69,58,.02) 72%,transparent)}
-.compounderstep.y20 .compounderyear{color:#FF6B5E}
-.compounderstep.y20 .compounderorders{font-size:clamp(74px,23vw,118px);color:#FF453A}
-.compounderstep.y20 .compoundervalues .n{font-size:clamp(50px,15.5vw,82px);color:#fff}
-.compounderend{margin:clamp(76px,15vh,118px) 0 0;font-size:clamp(34px,11vw,54px);font-weight:800;letter-spacing:-.06em;line-height:.9;text-transform:uppercase}
-.compoundernote{margin:20px 0 0;max-width:400px;font-size:11px;line-height:1.45;color:var(--lbl3)}
-@media (min-width:480px){.compounder{padding-left:28px;padding-right:28px}.compounderstep.y20{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}.compoundervalues{grid-template-columns:1fr 1fr;column-gap:28px}}
-.lcard{background:var(--elev);border-radius:20px;padding:18px;margin:14px 16px 0}
-.lsect{font-size:22px;font-weight:700;letter-spacing:-.022em;margin:30px 20px 2px}
-.lsect+.lsub{margin:0 20px 10px;font-size:13.5px;color:var(--lbl2);line-height:1.4}
-
-/* ring + heart */
-.vitals{display:flex;align-items:center;gap:18px}
-.ringwrap{position:relative;flex:0 0 132px;width:132px;height:132px}
-.ringwrap svg{transform:rotate(-90deg)}
-.ringtxt{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
-.ringtxt .rn{font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
-.ringtxt .rl{font-size:11px;color:var(--lbl2);margin-top:3px}
-.vitxt .vn{font-size:15px;font-weight:600;margin-bottom:6px}
-.vitxt .vd{font-size:13.5px;color:var(--lbl2);line-height:1.45}
-.heartrow{display:flex;align-items:center;gap:14px;margin-top:16px;padding-top:16px;border-top:.5px solid var(--sep2)}
-.heart{width:52px;height:52px;flex:0 0 52px;transform-origin:50% 55%;animation:beat var(--bt,1s) ease-in-out infinite;
-  filter:drop-shadow(0 0 14px rgba(255,59,48,.5))}
-@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(.99)}36%{transform:scale(1.07)}50%{transform:scale(1)}}
-.heart.skip{animation:beatskip var(--bt,1s) ease-in-out infinite}
-@keyframes beatskip{0%,100%{transform:scale(1)}10%{transform:scale(1.15)}20%{transform:scale(.98)}30%{transform:scale(1.09)}40%{transform:scale(1)}72%{transform:scale(1)}80%{transform:scale(1.2)}88%{transform:scale(1)}}
-.bpm .n{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.bpm .n small{font-size:13px;font-weight:400;color:var(--lbl2);margin-left:5px;letter-spacing:0}
-.bpm .t{font-size:13px;color:var(--lbl2);margin-top:5px;line-height:1.4}
-
-/* rows inside dark cards */
-.drow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;position:relative;gap:14px}
-.drow+.drow::before{content:'';position:absolute;left:0;right:0;top:0;height:.5px;background:var(--sep2)}
-.drow .dk{font-size:15px}
-.drow .dv{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.drow .dsub{font-size:12.5px;color:var(--lbl2);margin-top:2px}
-
-/* timeline */
-.tl .st{display:grid;grid-template-columns:54px 16px 1fr;gap:0 10px;align-items:start;padding-bottom:16px;position:relative}
-.tl .st .tm{font-size:12.5px;color:var(--lbl2);text-align:right;padding-top:1px;font-variant-numeric:tabular-nums}
-.tl .st .dt{width:10px;height:10px;border-radius:50%;background:#FF453A;margin:5px auto 0;box-shadow:0 0 0 4px rgba(255,69,58,.16);position:relative;z-index:1}
-.tl .st.soft .dt{background:#FF9F0A;box-shadow:0 0 0 4px rgba(255,159,10,.16)}
-.tl .st:not(:last-child)::after{content:'';position:absolute;left:69px;top:17px;bottom:0;width:1.5px;background:var(--sep2)}
-.tl .st .tx{font-size:15px;line-height:1.42}
-.tl .st .tx b{font-weight:600;color:#FF6B5E}
-.tl .st:last-child{padding-bottom:0}
-
-.anatomy{margin:44px 16px 0}
-.anatomyhead{margin:0 4px;font-size:28px;font-weight:750;letter-spacing:-.035em;line-height:1.05}
-.anatomysub{margin:10px 4px 0;font-size:14px;color:var(--lbl2);line-height:1.45}
-.anatomylist{display:grid;gap:28px;margin-top:22px}
-.anatomycard{overflow:hidden;background:#171719;border:1px solid rgba(255,255,255,.1);border-radius:20px;box-shadow:0 18px 44px rgba(0,0,0,.24)}
-.anatomycard img{display:block;width:100%;height:auto;background:#101112}
-.anatomycard:first-child img{aspect-ratio:1;object-fit:cover;object-position:center}
-.anatomycopy{padding:19px 18px 20px}
+.doseattr{margin:18px 0 0;font-size:11px;line-height:1.4;color:var(--lbl3)}
+.redpattern{min-height:92dvh;padding:clamp(58px,11vh,94px) 20px 60px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:background .2s}
+.patternhead span,.patternhead strong{display:block}
+.patternfrequency{margin:28px 0 0;font-size:clamp(28px,9vw,42px);font-weight:800;letter-spacing:-.04em;color:#FF453A;text-transform:uppercase}
+.horizonpicker{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:clamp(28px,5vh,46px) 0 0}
+.horizonpicker button{min-height:44px;padding:8px 3px;border:1px solid rgba(255,255,255,.2);border-radius:11px;color:var(--lbl2);font-size:13px;font-weight:650}
+.horizonpicker button[aria-pressed="true"]{background:#fff;border-color:#fff;color:#000}
+.redpattern.longview{background:linear-gradient(180deg,#000,rgba(130,12,9,.24) 62%,#000)}
+.redpattern.longview .horizonpicker button[aria-pressed="true"]{background:#FF453A;border-color:#FF453A;color:#000}
+.horizonresult{margin:clamp(34px,7vh,62px) 0 0}
+.horizonyear{margin:0 0 20px;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--lbl2);text-transform:uppercase}
+.horizonvalues{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.horizonvalue{min-width:0}
+.horizonvalue:not(:first-child){padding-top:16px;border-top:1px solid rgba(255,255,255,.2)}
+.horizonvalue .n{display:block;font-weight:800;line-height:.82;font-variant-numeric:tabular-nums;min-width:0}
+.horizonnumeric{display:block;font-size:clamp(32px,11vw,60px);letter-spacing:-.075em;line-height:.9;white-space:nowrap}
+.horizonvalue:first-child .horizonnumeric{font-size:clamp(54px,18vw,96px)}
+.horizonunit{display:block;margin-top:7px;font-size:12px;font-weight:700;letter-spacing:.12em;line-height:1;color:var(--lbl2);text-transform:uppercase}
+.horizonvalue:nth-child(3) .horizonnumeric{display:inline-block}
+.horizoncurrency{display:inline-block;margin-left:.12em;font-size:clamp(20px,6vw,34px);letter-spacing:-.04em;line-height:1;vertical-align:baseline;white-space:nowrap}
+.horizonvalue:first-child .n{color:#FF453A}
+.horizonvalue .l{display:block;margin-top:8px;font-size:10.5px;font-weight:700;letter-spacing:.12em;color:var(--lbl2);text-transform:uppercase}
+.patternnote{margin:28px 0 0;font-size:11px;line-height:1.45;color:var(--lbl3)}
+.anatomy{padding:clamp(58px,11vh,94px) 0 64px;overflow:hidden}
+.anatomyhead,.anatomysub{margin-left:20px;margin-right:20px}
+.anatomysub{margin-top:14px;font-size:15px;color:var(--lbl2);line-height:1.45}
+.anatomylist{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:20px;margin-top:28px;padding:0 20px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.anatomylist::-webkit-scrollbar{display:none}
+.anatomycard{flex:0 0 calc(100% - 32px);scroll-snap-align:start;overflow:hidden;background:#171719;border:1px solid rgba(255,255,255,.1);border-radius:20px;box-shadow:0 18px 44px rgba(0,0,0,.24)}
+.anatomycard img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#101112}
+.anatomycard:first-child img{object-position:center}
+.anatomycopy{padding:17px 18px 19px}
 .anatomycopy h3{margin:0;font-size:22px;font-weight:700;letter-spacing:-.025em;line-height:1.15}
-.anatomycopy p{margin:9px 0 0;font-size:15px;color:rgba(255,255,255,.72);line-height:1.5}
-.anatomylabel{display:block;margin-top:17px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1);font-size:10.5px;font-weight:700;letter-spacing:.1em;line-height:1.4;color:#C98272;text-transform:uppercase}
-@media (min-width:480px){.anatomy{margin-left:20px;margin-right:20px}.anatomyhead,.anatomysub{margin-left:8px;margin-right:8px}.anatomycopy{padding:21px 22px 22px}}
-.quad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.q{background:var(--elev2);border-radius:14px;padding:11px 6px;text-align:center}
-.q .qn{font-size:19px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.q .qt{font-size:10.5px;color:var(--lbl2);line-height:1.25;margin-top:3px}
-.oppo{margin-top:14px;padding-top:14px;border-top:.5px solid var(--sep2)}
-.oppo .on{font-size:32px;font-weight:700;letter-spacing:-.035em;color:#FF453A;font-variant-numeric:tabular-nums}
-.oppo .ot{font-size:13.5px;color:var(--lbl2);line-height:1.45;margin-top:6px}
-.agenote{font-size:15px;line-height:1.5;margin:16px 20px 0}
-.agenote b{color:#FF453A;font-weight:700}
-.factbox{margin:18px 16px 0;padding:16px;background:var(--elev);border-radius:20px;border-left:4px solid #FF453A}
-.factbox .ft{font-size:14.5px;line-height:1.55;color:var(--lbl2)}
-.factbox .ft b{color:#fff;font-weight:600}
-.factbox .fs{font-size:11.5px;color:var(--lbl3);margin-top:9px}
-.letterbox{margin:18px 16px 0;padding:18px;background:var(--elev);border-radius:20px}
-.letterbox .lq{font-size:17px;line-height:1.5;font-weight:500}
-.letterbox .ls{font-size:12.5px;color:var(--lbl2);margin-top:10px}
+.anatomycopy p{margin:8px 0 0;font-size:14px;color:rgba(255,255,255,.72);line-height:1.45}
+.anatomylabel{display:block;margin-top:14px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;font-weight:700;letter-spacing:.09em;line-height:1.35;color:#C98272;text-transform:uppercase}
+.anatomynav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:10px}
+.anatomynav button{width:44px;height:44px;border:1px solid rgba(255,255,255,.22);border-radius:50%;color:#fff;font-size:21px}
+.anatomynav button:disabled{color:var(--lbl3);border-color:rgba(255,255,255,.08)}
+.anatomystatus{min-width:40px;text-align:center;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--lbl2)}
+.decision{min-height:82dvh;padding:clamp(62px,12vh,104px) 0 0;display:flex;flex-direction:column;justify-content:center}
+.decisionhead{padding:0 20px}
+.evidence{margin:30px 20px 0;border-top:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2)}
+.evidence summary{min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;list-style:none}
+.evidence summary::-webkit-details-marker{display:none}.evidence summary::after{content:'+';font-size:22px;font-weight:400;color:#FF6B5E}.evidence[open] summary::after{content:'−'}
+.evidencebody{padding:0 0 18px;font-size:13px;line-height:1.5;color:var(--lbl2)}
+.evidencebody p{margin:0 0 10px}.evidencebody p:last-child{margin:0}
 .patternhit{margin:14px 16px 0;padding:13px 15px;background:rgba(255,69,58,.16);border-radius:14px;font-size:14px;line-height:1.4}
 .patternhit b{color:#FF6B5E;font-weight:600}
 .losswarn{margin:26px 16px 0;padding:16px;border-radius:20px;background:rgba(255,69,58,.12)}
@@ -330,7 +264,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .burnstrip i{width:12px;height:19px;border-radius:3px;background:#30D158;animation:burn 2.2s ease-in-out infinite}
 @keyframes burn{0%,100%{background:#30D158}55%{background:#FF453A}}
 .losswarn .lw2{font-size:13px;color:var(--lbl2);line-height:1.45}
-.labacts{padding:24px 16px 0;display:flex;flex-direction:column;gap:12px}
+.labacts{padding:30px 16px 0;display:flex;flex-direction:column;gap:12px}
 .bigbtn{height:54px;border-radius:16px;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;transition:transform .12s}
 .bigbtn:active{transform:scale(.975)}
 .bigbtn.keep{background:#30D158;color:#00300F}
@@ -338,6 +272,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .bigbtn.goon.ready{color:#FF453A}
 .waitline{text-align:center;font-size:12.5px;color:var(--lbl3);line-height:1.4;margin-top:-4px}
 .labdis{font-size:11.5px;color:var(--lbl3);line-height:1.5;margin:22px 20px 0}
+@media (min-width:600px){
+  .reddose,.redpattern{padding-left:28px;padding-right:28px}.dosegrid{grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid rgba(255,255,255,.2)}
+  .doseitem{display:block;min-width:0;padding:26px 12px;border-right:1px solid rgba(255,255,255,.2);border-bottom:0}.doseitem:last-child{border-right:0}.dosepct{margin-top:18px;font-size:clamp(40px,8vw,48px);letter-spacing:-.085em}.dosegrams{margin-top:8px}
+}
+@media (max-height:700px){.reddose,.redpattern{min-height:auto}.decision{min-height:auto;padding-top:62px}.redkcal{margin-top:42px}.redorder,.redfacts{margin-top:30px}}
 
 /* ══════════ GEWONNEN (light) ══════════ */
 .win{position:fixed;inset:0;z-index:64;display:none;overflow-y:auto;background:var(--sys-bg)}
@@ -514,19 +453,8 @@ const MENU=[
   {id:'bacon',n:'Bacon & Egg McMuffin',e:'🥓',p:3.99,kcal:350,fat:17,sat:7,sug:3,salt:1.9},
   {id:'panc',n:'Pancakes mit Sirup',e:'🥞',p:4.29,kcal:450,fat:12,sat:4,sug:33,salt:1},
   {id:'latte',n:'Latte Macchiato',e:'☕',p:2.99,kcal:120,fat:5,sat:3,sug:9,salt:.2}]}];
-const REF={kcal:2000,fat:70,sat:20,sug:25,salt:5};
 const DOSE_REF={sat:20,sug:90,salt:6};
 const ORDERS_PER_YEAR=2*52;
-const FACTS=[
- {t:'Nach einer sehr fettreichen Mahlzeit arbeitet die Innenwand deiner Gefäße <b>für mehrere Stunden messbar schlechter</b>. Du spürst nichts. Genau das ist das Problem.',s:'Vogel et al., Am J Cardiol 1997'},
- {t:'Je 10 % mehr hochverarbeitete Lebensmittel: <b>rund 12 % höheres Risiko für Herz-Kreislauf-Erkrankungen</b> in großen Kohorten. Ein Zusammenhang – aber einer, der immer wieder gefunden wird.',s:'Srour et al., BMJ 2019'},
- {t:'LDL-Cholesterin ist das Material, aus dem <b>Plaques in deinen Arterien</b> werden. Sie wachsen jahrzehntelang, ohne dass irgendwas wehtut.',s:'ESC/EAS Konsensus zu LDL'},
- {t:'Zucker aus dem Becher sättigt nicht. Der Körper <b>zieht die Cola nicht vom Burger ab</b>. Er addiert.',s:'Übersichten zu liquid calories & satiety'},
- {t:'Bluthochdruck ist weltweit der <b>Risikofaktor mit den meisten verlorenen Lebensjahren</b>. Er tut nichts – bis er etwas tut.',s:'Global Burden of Disease Study'},
- {t:'Rund <b>ein Viertel aller Erwachsenen</b> hat eine verfettete Leber, fast alle ohne es zu wissen. Überschussenergie ist der Weg dahin.',s:'Younossi et al., Hepatology 2016'},
- {t:'Eine Studie rechnet verarbeitetes Fleisch in <b>verlorene gesunde Lebensminuten um – pro Portion</b>. Nicht pro Jahr. Pro Portion.',s:'Stylianou et al., Nature Food 2021'},
- {t:'Jede große Zuckerlast treibt Glukose und Insulin steil hoch. <b>Über Jahre wiederholt ist das der Weg in die Insulinresistenz.</b>',s:'Grundlagen Glukosestoffwechsel'},
- {t:'7.700 kcal Überschuss sind <b>ein Kilo Körperfett</b>. Es fühlt sich an keinem einzelnen Tag nach einem Kilo an.',s:'Energiebilanz'}];
 const TRIGS=[{k:'hunger',l:'Richtig hungrig',e:'😖'},{k:'stress',l:'Stress',e:'🔥'},{k:'muede',l:'Müde',e:'🥱'},{k:'lang',l:'Langeweile',e:'🌀'},{k:'weg',l:'Unterwegs',e:'🚗'},{k:'sozial',l:'Mit anderen',e:'👥'},{k:'lohn',l:'Belohnung verdient',e:'🎁'},{k:'leer',l:'Nichts zu essen da',e:'🧊'}];
 const TRIGL=k=>(TRIGS.find(x=>x.k===k)||{l:k}).l;
 const WD=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
@@ -574,7 +502,6 @@ const grams=n=>n.toLocaleString('de-DE',{minimumFractionDigits:Number.isInteger(
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const daysSince=d=>validDate(d)?Math.floor((Date.parse(`${today()}T00:00:00Z`)-Date.parse(`${d}T00:00:00Z`))/864e5):0;
 const streak=()=>{const t=today();let l=null;S.relapses.forEach(d=>{if(validDate(d)&&d<=t&&(!l||d>l))l=d;});const n=daysSince(l||S.start);return Number.isFinite(n)?Math.max(0,n):0;};
-const cap=(x,m=2)=>Math.min(x,m);
 const RATE=()=>Math.max(0,(S.rate==null?7:S.rate))/100;
 const pctTxt=()=>(RATE()*100).toFixed(1).replace('.',',');
 const fvOnce=(p,n)=>p*Math.pow(1+RATE(),n);
@@ -649,41 +576,20 @@ function commitProceed(order){
   flow.outcomeCommitted=true;
   return true;
 }
-const burn=(k,met)=>Math.round(k/(met*3.5*S.weight/200));
-const sevCol=r=>r>=1?'#FF453A':r>=.5?'#FF9F0A':'#FFD60A';
-function timeline(t,r){
-  const st=[{tm:'0 min',tx:'Erster Bissen. Dein Belohnungssystem feuert. <b>Deshalb sitzt du hier.</b>'}];
-  if(r.sug>=.3)st.push({tm:'15 min',tx:`${t.sug.toFixed(0)} g Zucker sind im Blut. <b>Glukose schießt steil nach oben.</b>`});
-  if(r.sug>=.5)st.push({tm:'30 min',tx:'Insulin jagt hinterher. Der Körper schaltet um: <b>alles speichern, nichts verbrennen.</b>'});
-  if(r.salt>=.3)st.push({tm:'45 min',tx:`${t.salt.toFixed(1)} g Salz ziehen Wasser ins Blut. <b>Der Blutdruck steigt.</b>`});
-  if(r.fat>=.3)st.push({tm:'2–4 h',tx:'Das Fett ist im Blut. Deine Gefäßinnenwände <b>arbeiten messbar schlechter</b> – stundenlang.'});
-  if(r.sug>=.5)st.push({tm:'3 h',tx:'Der Blutzucker fällt unter den Ausgangswert. <b>Müde. Und schon wieder Hunger.</b>',soft:1});
-  st.push({tm:'6–8 h',tx:`Der Überschuss ist verpackt: <b>${Math.round(t.kcal/7700*1000)} g Fett</b>, gelagert in Leber und Bauch.`});
-  st.push({tm:'morgen',tx:'Aufgeschwemmt, etwas schwerer, etwas trüber. <b>Und der Streak ist weg.</b>',soft:1});
-  return `<div class="tl">${st.map(s=>`<div class="st ${s.soft?'soft':''}"><div class="tm">${s.tm}</div><div class="dt"></div><div class="tx">${s.tx}</div></div>`).join('')}</div>`;
-}
-
 function showBefund(){
   if(flow.state!==FLOW.CONFIRMATION||!flow.order)return;
   transitionFlow(FLOW.RED_ROOM);
   const order=flow.order,t=totals(order);
-  const annual=compounderTotals(order,1);
-  const annualNutrient=n=>n<1000?grams(n):(n/1000).toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1})+' kg';
-  const compounder=[1,5,10,20].map(years=>compounderTotals(order,years));
   $('#confirm').classList.remove('on');
-  const r={kcal:t.kcal/REF.kcal,fat:t.fat/REF.fat,sat:t.sat/REF.sat,sug:t.sug/REF.sug,salt:t.salt/REF.salt};
-  const f=FACTS[Math.floor(Math.random()*FACTS.length)];
-  const score=.35*cap(r.sat)+.25*cap(r.salt)+.25*cap(r.sug)+.15*cap(r.kcal);
-  const drop=Math.min(85,Math.round(score*45)), bpm=Math.round(62+drop*.95);
-  const age=new Date().getFullYear()-(S.year||1983), s=streak();
-  const C=2*Math.PI*54;
-  const drow=(k,v,sub,rr)=>`<div class="drow"><span class="dk">${k}${sub?`<div class="dsub">${sub}</div>`:''}</span><span class="dv" style="color:${rr>=1?'#FF453A':'#fff'}">${v}</span></div>`;
-  const dose=(name,amount,reference)=>{const percentage=amount/reference*100,display=Math.round(percentage);return `<article class="doseitem"><h3 class="dosename">${name}</h3><p class="dosegrams">${grams(amount)}</p><p class="dosepct ${percentage>=100?'high':''}">${display.toLocaleString('de-DE')} %</p><p class="doseref">der täglichen Referenzmenge</p></article>`;};
+  const s=streak();
+  const dose=(name,amount,reference)=>{const percentage=amount/reference*100,display=Math.round(percentage);return `<article class="doseitem"><div><h3 class="dosename">${name}</h3><p class="dosegrams">${grams(amount)}</p></div><p class="dosepct ${percentage>=100?'high':''}">${display.toLocaleString('de-DE')} %</p></article>`;};
+  const firstHorizon=compounderTotals(order,1);
 
   $('#labinner').innerHTML=`
     ${reduced?'':'<div class="flash"><span>STOPP.</span></div>'}
     <div class="labnav">Befund</div>
-    <section class="redopening" aria-labelledby="redheadline">
+    <section class="redopening scene" aria-labelledby="redheadline">
+      <p class="sceneeyebrow">Stopp.</p>
       <h1 class="redheadline" id="redheadline"><span>Das hier</span><span>wolltest du</span><span>gerade essen.</span></h1>
       <div class="redkcal" aria-label="${fmt(t.kcal)} Kilokalorien"><span class="n" aria-hidden="true">${fmt(t.kcal)}</span><span class="u" aria-hidden="true">KCAL</span></div>
       <p class="redorder">${order.map(i=>esc(i.n)).join(' · ')}</p>
@@ -694,57 +600,36 @@ function showBefund(){
         <div role="listitem"><span class="v">${grams(t.salt)}</span><span class="l">Salz</span></div>
       </div>
     </section>
-    <section class="reddose" aria-labelledby="doseheadline">
+    <section class="reddose scene" aria-labelledby="doseheadline">
       <h2 class="dosehead" id="doseheadline"><span>Eine</span><span>Bestellung.</span></h2>
       <p class="dosesub">So viel davon steckt in einer einzigen Entscheidung.</p>
-      <p class="dosecontext">Anteil an der täglichen Referenzmenge</p>
-      <div>
-        ${dose('Gesättigtes Fett',t.sat,DOSE_REF.sat)}
+      <div class="dosegrid" aria-label="Anteil an den täglichen Referenzmengen">
+        ${dose('Gesättigte Fette',t.sat,DOSE_REF.sat)}
         ${dose('Zucker',t.sug,DOSE_REF.sug)}
         ${dose('Salz',t.salt,DOSE_REF.salt)}
       </div>
-      <p class="doseend">Eine Bestellung.</p>
       <p class="doseattr">Referenzmengen für Erwachsene gemäß EU-Lebensmittelinformation.</p>
     </section>
-    <section class="redpattern" aria-labelledby="patternheadline">
+    <section class="redpattern scene" id="patternscene" aria-labelledby="patternheadline">
       <h2 class="patternhead" id="patternheadline"><span>Eine Mahlzeit</span><span>ist nicht das Problem.</span><strong>Das Muster ist es.</strong></h2>
-      <p class="patternintro">Wenn dieselbe Entscheidung zweimal pro Woche fällt:</p>
-      <div class="patternfrequency" aria-label="Szenario: zwei Bestellungen pro Woche ergeben 104 Bestellungen im Jahr">
-        <div><span class="n">2×</span><span class="l">pro Woche</span></div>
-        <div><span class="n">104×</span><span class="l">im Jahr</span></div>
+      <p class="patternfrequency">2× pro Woche</p>
+      <div class="horizonpicker" role="group" aria-label="Zeitraum wählen">
+        ${[1,5,10,20].map(years=>`<button type="button" data-years="${years}" aria-pressed="${years===1}">${years} ${years===1?'Jahr':'Jahre'}</button>`).join('')}
       </div>
-      <p class="annualcontext">Dieses Szenario in einem Jahr</p>
-      <div class="annualorders"><span class="n">104</span><span class="l">Bestellungen</span></div>
-      <ul class="annualtotals" aria-label="Jahressumme aus 104 vergleichbaren Bestellungen">
-        <li><span class="n">${fmt(annual.kcal)}</span><span class="l">Kcal</span></li>
-        <li><span class="n">${eur(annual.p)}</span><span class="l">Ausgegeben</span></li>
-        <li><span class="n">${annualNutrient(annual.sat)}</span><span class="l">Gesättigtes Fett</span></li>
-        <li><span class="n">${annualNutrient(annual.sug)}</span><span class="l">Zucker</span></li>
-        <li><span class="n">${annualNutrient(annual.salt)}</span><span class="l">Salz</span></li>
-      </ul>
-      <p class="patternend">Nicht eine Mahlzeit.<br>Die Wiederholung.</p>
-      <p class="patternnote">Summe aus 104 vergleichbaren Bestellungen.</p>
-    </section>
-    <section class="compounder" aria-labelledby="compounderheadline">
-      <h2 class="compounderhead" id="compounderheadline">Das summiert sich.</h2>
-      <p class="compoundersub">Zweimal pro Woche. Jahr für Jahr.</p>
-      <div class="compounderlist">
-        ${compounder.map(c=>`<article class="compounderstep y${c.years}" aria-label="${c.years} ${c.years===1?'Jahr':'Jahre'}: ${fmt(c.orders)} Bestellungen, ${fmt(c.kcal)} Kilokalorien, ${eur(c.p)} ausgegeben">
-          <h3 class="compounderyear">${c.years} ${c.years===1?'Jahr':'Jahre'}</h3>
-          <div class="compounderorders">${fmt(c.orders)}<span>Bestellungen</span></div>
-          <ul class="compoundervalues">
-            <li><span class="n">${fmt(c.kcal)} kcal</span><span class="l">kumuliert</span></li>
-            <li><span class="n">${eur(c.p)}</span><span class="l">ausgegeben</span></li>
-          </ul>
-        </article>`).join('')}
+      <div class="horizonresult" id="horizonresult" aria-live="polite">
+        <p class="horizonyear" id="horizonyear">1 Jahr</p>
+        <div class="horizonvalues">
+          <div class="horizonvalue"><span class="n"><span class="horizonnumeric" id="horizonorders">${fmt(firstHorizon.orders)}</span></span><span class="l">Bestellungen</span></div>
+          <div class="horizonvalue"><span class="n"><span class="horizonnumeric" id="horizonkcal">${fmt(firstHorizon.kcal)}</span><span class="horizonunit">kcal</span></span></div>
+          <div class="horizonvalue"><span class="n"><span class="horizonnumeric" id="horizonprice">${eur(firstHorizon.p).replace(' €','')}</span><span class="horizoncurrency">€</span></span><span class="l">Ausgaben</span></div>
+        </div>
       </div>
-      <p class="compounderend">Nicht die eine Bestellung.<br>Die Wiederholung.</p>
-      <p class="compoundernote">Kumulierte Summe aus jeweils 104 vergleichbaren Bestellungen pro Jahr. Keine Prognose für Gewicht, Gesundheit oder Lebensdauer.</p>
+      <p class="patternnote">Jeweils 104 vergleichbare Bestellungen pro Jahr. Keine Prognose für Gewicht, Gesundheit oder Lebensdauer.</p>
     </section>
-    <section class="anatomy" aria-labelledby="anatomyheading">
+    <section class="anatomy scene" aria-labelledby="anatomyheading">
       <h2 class="anatomyhead" id="anatomyheading">Was dieses Muster belastet</h2>
       <p class="anatomysub">Nicht durch eine Mahlzeit allein — sondern durch Wiederholung.</p>
-      <div class="anatomylist">
+      <div class="anatomylist" id="anatomylist" aria-label="Anatomische Bereiche">
         <article class="anatomycard">
           <img src="assets/redroom/redroom-heart-arteries.jpeg" alt="Dunkle anatomische Darstellung von Herz und Arterien" loading="lazy" decoding="async">
           <div class="anatomycopy">
@@ -770,88 +655,52 @@ function showBefund(){
           </div>
         </article>
       </div>
+      <div class="anatomynav" aria-label="Anatomie-Karten navigieren">
+        <button type="button" id="anatomyprev" aria-label="Vorherige Karte" disabled>‹</button>
+        <span class="anatomystatus" id="anatomystatus" aria-live="polite">1 / 3</span>
+        <button type="button" id="anatomynext" aria-label="Nächste Karte">›</button>
+      </div>
     </section>
-    ${patternHit()}
-
-    <div class="lcard">
-      <div class="vitals">
-        <div class="ringwrap">
-          <svg width="132" height="132" viewBox="0 0 132 132">
-            <circle cx="66" cy="66" r="54" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="13"/>
-            <circle id="ring" cx="66" cy="66" r="54" fill="none" stroke="#30D158" stroke-width="13" stroke-linecap="round"
-              stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="0"/>
-          </svg>
-          <div class="ringtxt"><div><div class="rn" id="ringN">100</div><div class="rl">von 100</div></div></div>
+    <section class="decision" aria-labelledby="decisionheading">
+      <p class="sceneeyebrow" style="margin-left:20px;margin-right:20px">Die Entscheidung</p>
+      <h2 class="decisionhead" id="decisionheading">Jetzt<br>entscheidest du.</h2>
+      ${patternHit()}
+      ${s>0?`<div class="losswarn">
+        <div class="lw1">Du löschst gleich <b>${s} ${s===1?'Tag':'Tage'}</b>.</div>
+        <div class="burnstrip">${Array.from({length:Math.min(s,36)},(_,i)=>`<i style="animation-delay:${(i*.05).toFixed(2)}s"></i>`).join('')}</div>
+        <div class="lw2">${s>=S.record?'Das ist gerade dein Rekord. Er endet mit diesem Knopf.':`Dein Rekord steht bei ${S.record} Tagen. Bis dahin fehlen ${S.record-s}.`}</div></div>`:''}
+      <details class="evidence">
+        <summary>Warum das relevant ist</summary>
+        <div class="evidencebody">
+          <p>Die drei Prozentwerte nutzen unverändert die Referenzmengen für Erwachsene gemäß EU-Lebensmittelinformation: 20 g gesättigte Fettsäuren, 90 g Zucker und 6 g Salz.</p>
+          <p>Die anatomischen Hinweise beschreiben langfristige Zusammenhänge und Reaktionen auf wiederholte Muster — keine Folge dieser einen Mahlzeit und keine persönliche Prognose.</p>
         </div>
-        <div class="vitxt">
-          <div class="vn">Dein Gesundheitskonto</div>
-          <div class="vd">Diese Bestellung zieht <b style="color:#FF453A">−${drop}</b> ab. Ein Teil davon kommt nicht zurück.</div>
-        </div>
+      </details>
+      <div class="labacts">
+        <button class="bigbtn keep" id="abort">Nein. Ich bestelle nicht.</button>
+        <button class="bigbtn goon" id="proceed" disabled>Trotzdem essen (${WAIT})</button>
+        <div class="waitline" id="waitline">Der Knopf öffnet in ${WAIT} Sekunden.</div>
       </div>
-      <div class="heartrow">
-        <svg class="heart ${drop>=40?'skip':''}" style="--bt:${(60/bpm).toFixed(2)}s" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M50 88 C20 65 5 45 5 28 C5 14 16 6 27 6 C37 6 45 12 50 20 C55 12 63 6 73 6 C84 6 95 14 95 28 C95 45 80 65 50 88 Z" fill="${sevCol(score)}"/></svg>
-        <div class="bpm"><div class="n">${bpm}<small>bpm</small></div>
-          <div class="t">${drop>=40?'Dein Herz pumpt schwer und stolpert.':'Dein Herz arbeitet gegen zäheres Blut an.'}</div></div>
-      </div>
-    </div>
-
-    ${S.letter?`<div class="letterbox"><div class="lq">„${esc(S.letter)}"</div><div class="ls">— du, mit 60, an dich heute</div></div>`:''}
-
-    <h2 class="lsect">Die nächsten 24 Stunden</h2>
-    <p class="lsub">in deinem Körper, wenn du jetzt bestellst</p>
-    <div class="lcard">${timeline(t,r)}</div>
-
-    <h2 class="lsect">Tagesgrenzen</h2>
-    <p class="lsub">WHO: max. 5 g Salz, ideal 25 g freier Zucker</p>
-    <div class="lcard">
-      ${drow('Gesättigtes Fett',t.sat.toFixed(0)+' g',Math.round(r.sat*100)+' % des Richtwerts',r.sat)}
-      ${drow('Zucker',t.sug.toFixed(0)+' g',Math.round(r.sug*100)+' % der Idealmenge',r.sug)}
-      ${drow('Salz',t.salt.toFixed(1)+' g',Math.round(r.salt*100)+' % der Höchstmenge',r.salt)}
-      ${drow('Fett gesamt',t.fat.toFixed(0)+' g',Math.round(r.fat*100)+' % des Richtwerts',r.fat)}
-    </div>
-
-    <h2 class="lsect">Was du dafür hergibst</h2>
-    <p class="lsub">gerechnet mit ${S.weight} kg</p>
-    <div class="lcard">
-      <div class="quad">
-        <div class="q"><div class="qn">${burn(t.kcal,3.8)}</div><div class="qt">min<br>gehen</div></div>
-        <div class="q"><div class="qn">${burn(t.kcal,9.8)}</div><div class="qt">min<br>laufen</div></div>
-        <div class="q"><div class="qn">${Math.round(t.kcal/7700*1000)}</div><div class="qt">g<br>Körperfett</div></div>
-        <div class="q"><div class="qn">+${(t.kcal*104/7700).toFixed(1)}</div><div class="qt">kg<br>pro Jahr</div></div>
-      </div>
-      <div class="oppo">
-        <div class="on">${eur0(fvHabit(t.p,20))}</div>
-        <div class="ot">So viel wären ${eur(t.p*104)} pro Jahr in 20 Jahren im Depot geworden, bei ${pctTxt()} % p. a. Das ist der eigentliche Preis dieser Bestellung — nicht die ${eur(t.p)}.</div>
-      </div>
-    </div>
-
-    <p class="agenote">Du bist <b>${age}</b>. Mit ${age} repariert dein Körper langsamer als mit 25. Was du heute in die Gefäße legst, <b>geht nur zum Teil wieder raus.</b></p>
-
-    <div class="factbox"><div class="ft">${f.t}</div><div class="fs">${f.s}</div></div>
-
-    ${s>0?`<div class="losswarn">
-      <div class="lw1">Du löschst gleich <b>${s} ${s===1?'Tag':'Tage'}</b>.</div>
-      <div class="burnstrip">${Array.from({length:Math.min(s,36)},(_,i)=>`<i style="animation-delay:${(i*.05).toFixed(2)}s"></i>`).join('')}</div>
-      <div class="lw2">${s>=S.record?'Das ist gerade dein Rekord. Er endet mit diesem Knopf.':`Dein Rekord steht bei ${S.record} Tagen. Bis dahin fehlen ${S.record-s}.`}</div></div>`:''}
-
-    <div class="labacts">
-      <button class="bigbtn keep" id="abort">Nein. Ich behalte meine ${drop} Punkte.</button>
-      <button class="bigbtn goon" id="proceed" disabled>Trotzdem essen (${WAIT})</button>
-      <div class="waitline" id="waitline">Der Knopf öffnet in ${WAIT} Sekunden.</div>
-    </div>
-    <p class="labdis">Nährwerte sind gerundete Richtwerte. Herzfrequenz, Konto und Grafiken sind Sinnbilder, keine Messwerte. Studien zeigen teils Zusammenhänge, keine bewiesenen Ursachen. Kein Ersatz für ärztliche Beratung.</p>`;
+      <p class="labdis">Nährwerte sind gerundete Richtwerte. Studien zeigen teils Zusammenhänge, keine bewiesenen Ursachen. Kein Ersatz für ärztliche Beratung.</p>
+    </section>`;
 
   $('#lab').classList.add('on');$('#lab').scrollTop=0;syncBodyScroll();
   if(!reduced)tap([30,60,30]);
 
-  const ring=$('#ring'),rn=$('#ringN');
-  const paint=v=>{const hue=Math.max(0,Math.round((v-15)/85*130));ring.style.stroke=`hsl(${hue} 72% 48%)`;ring.style.strokeDashoffset=(C*(1-v/100)).toFixed(1);rn.textContent=Math.round(v);rn.style.color=`hsl(${hue} 72% 56%)`;};
-  if(reduced)paint(100-drop);
-  else{const t0=performance.now()+650,dur=2200;
-    const step=now=>{if(now<t0){paint(100);requestAnimationFrame(step);return;}
-      const pr=Math.min(1,(now-t0)/dur);paint(100-drop*(1-Math.pow(1-pr,3)));if(pr<1)requestAnimationFrame(step);};
-    requestAnimationFrame(step);}
+  $('.horizonpicker').onclick=e=>{const button=e.target.closest('button[data-years]');if(!button)return;
+    const years=Number(button.dataset.years),h=compounderTotals(order,years);
+    document.querySelectorAll('.horizonpicker button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    $('#patternscene').classList.toggle('longview',years===20);
+    $('#horizonyear').textContent=`${years} ${years===1?'Jahr':'Jahre'}`;
+    $('#horizonorders').textContent=fmt(h.orders);$('#horizonkcal').textContent=fmt(h.kcal);$('#horizonprice').textContent=eur(h.p).replace(' €','');
+  };
+
+  const anatomyList=$('#anatomylist'),anatomyCards=[...anatomyList.children],anatomyPrev=$('#anatomyprev'),anatomyNext=$('#anatomynext'),anatomyStatus=$('#anatomystatus');
+  let anatomyIndex=0;
+  const updateAnatomy=index=>{anatomyIndex=Math.max(0,Math.min(anatomyCards.length-1,index));anatomyStatus.textContent=`${anatomyIndex+1} / ${anatomyCards.length}`;anatomyPrev.disabled=anatomyIndex===0;anatomyNext.disabled=anatomyIndex===anatomyCards.length-1;};
+  const goAnatomy=index=>{updateAnatomy(index);anatomyList.scrollTo({left:anatomyCards[anatomyIndex].offsetLeft-anatomyList.offsetLeft-20,behavior:reduced?'auto':'smooth'});};
+  anatomyPrev.onclick=()=>goAnatomy(anatomyIndex-1);anatomyNext.onclick=()=>goAnatomy(anatomyIndex+1);
+  anatomyList.addEventListener('scroll',()=>{const index=anatomyCards.reduce((best,card,i)=>Math.abs(card.offsetLeft-anatomyList.offsetLeft-anatomyList.scrollLeft)<Math.abs(anatomyCards[best].offsetLeft-anatomyList.offsetLeft-anatomyList.scrollLeft)?i:best,0);updateAnatomy(index);},{passive:true});
 
   const pb=$('#proceed'),wl=$('#waitline');let left=WAIT;clearInterval(waitTimer);
   flow.waitDeadline=Date.now()+WAIT*1000;
