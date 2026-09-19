@@ -509,7 +509,7 @@ function askTrigger(kind,t,cb){
   $('#trigSub').textContent=kind==='stop'?'Ein Tipp. Nach ein paar Einträgen zeigt dir die App dein Muster.':'Kein Urteil. Nur damit du dein Muster irgendwann siehst.';
   $('#trigs').innerHTML=TRIGS.map(x=>`<button class="trig" data-k="${x.k}">${x.e} ${x.l}</button>`).join('');
   let completed=false;
-  const done=k=>{if(completed)return;completed=true;logEvent(kind,k,t);closeSheet('#trigsheet');cb();};
+  const done=k=>{if(completed)return;completed=true;logEvent(kind,k,t);closeSheet('#trigsheet',true);cb();};
   $('#trigs').onclick=e=>{const b=e.target.closest('.trig');if(b){tap(8);done(b.dataset.k);}};
   $('#trigskip').onclick=()=>done(null);
   openSheet('#trigsheet');
@@ -664,7 +664,7 @@ function showBefund(){
     </div>
     <p class="labdis">Nährwerte sind gerundete Richtwerte. Herzfrequenz, Konto und Grafiken sind Sinnbilder, keine Messwerte. Studien zeigen teils Zusammenhänge, keine bewiesenen Ursachen. Kein Ersatz für ärztliche Beratung.</p>`;
 
-  $('#lab').classList.add('on');$('#lab').scrollTop=0;document.body.style.overflow='hidden';
+  $('#lab').classList.add('on');$('#lab').scrollTop=0;syncBodyScroll();
   if(!reduced)tap([30,60,30]);
 
   const ring=$('#ring'),rn=$('#ringN');
@@ -689,7 +689,7 @@ function showBefund(){
     flow.waitDeadline=null;cart=[];updateBar();updatePill();
     askTrigger('go',totals(order),()=>{transitionFlow(FLOW.BROWSING);closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
 }
-function closeLab(){clearInterval(waitTimer);$('#lab').classList.remove('on');document.body.style.overflow='';$('#labinner').innerHTML='';}
+function closeLab(){clearInterval(waitTimer);$('#lab').classList.remove('on');$('#labinner').innerHTML='';syncBodyScroll();}
 
 /* ── Gewonnen ── */
 function butterfly(t){
@@ -770,18 +770,23 @@ function showWin(t){
     ${S.why?`<p class="wnote" style="font-size:15px;color:var(--label)"><b>„${esc(S.why)}"</b> — heute ein Stück näher.</p>`:''}
     <div class="winbtns"><button class="btn" id="winclose" style="width:100%;background:var(--green)">Weiter. Ich hab was Besseres vor.</button></div>
     <p class="windis">Renditerechnung mit ${pctTxt()} % p. a. nominal, ohne Steuern, Kosten und Inflation. Vergangene Renditen sind keine Zusage für die Zukunft — keine Anlageberatung. Gesundheitsangaben sind allgemeine Studienlage, keine individuelle Prognose.</p>`;
-  closeLab();
-  $('#win').classList.add('on');$('#win').scrollTop=0;document.body.style.overflow='hidden';tap(20);
-  $('#winclose').onclick=()=>{if(flow.state!==FLOW.GREEN_ROOM)return;transitionFlow(FLOW.BROWSING);$('#win').classList.remove('on');$('#wininner').innerHTML='';document.body.style.overflow='';toast('Gut gemacht.');};
+  $('#win').classList.add('on');$('#win').scrollTop=0;closeLab();syncBodyScroll();tap(20);
+  $('#winclose').onclick=()=>{if(flow.state!==FLOW.GREEN_ROOM)return;transitionFlow(FLOW.BROWSING);$('#win').classList.remove('on');$('#wininner').innerHTML='';syncBodyScroll();toast('Gut gemacht.');};
 }
 
 /* ── sheets & wiring ── */
-const openSheet=i=>{$(i).classList.add('on');document.body.style.overflow='hidden';};
-const closeSheet=i=>{$(i).classList.remove('on');if(!document.querySelector('.sheet.on')&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on'))document.body.style.overflow='';};
+const syncBodyScroll=()=>{document.body.style.overflow=document.querySelector('.sheet.on')||$('#lab').classList.contains('on')||$('#win').classList.contains('on')?'hidden':'';};
+const canOpenSheet=i=>{
+  if(i==='#trigsheet')return flow.state===FLOW.REFLECTION&&$('#lab').classList.contains('on')&&!$('#win').classList.contains('on');
+  if(i==='#cartsheet')return flow.state===FLOW.CART_REVIEW&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
+  return ['#statssheet','#setsheet'].includes(i)&&flow.state===FLOW.BROWSING&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on')&&!$('#trigsheet').classList.contains('on');
+};
+const openSheet=i=>{const sh=$(i);if(!sh||!canOpenSheet(i))return false;if(i!=='#trigsheet')document.querySelectorAll('.sheet.on').forEach(x=>x.classList.remove('on'));sh.classList.add('on');syncBodyScroll();return true;};
+const closeSheet=(i,requiredCompletion=false)=>{const sh=$(i);if(!sh||i==='#trigsheet'&&flow.state===FLOW.REFLECTION&&!requiredCompletion){syncBodyScroll();return false;}sh.classList.remove('on');syncBodyScroll();return true;};
 const renderCart=()=>{$('#cartlist').innerHTML=cart.map((i,ix)=>`<div class="cell"><span class="ico">${i.e}</span><span class="tx"><b>${i.n}</b><span>${eur(i.p)} · ${i.kcal} kcal</span></span><button class="add" data-ix="${ix}" aria-label="entfernen" style="color:var(--red)">−</button></div>`).join('');};
-const openCart=()=>{if(flow.state!==FLOW.BROWSING)return;renderCart();transitionFlow(FLOW.CART_REVIEW);openSheet('#cartsheet');};
+const openCart=()=>{if(flow.state!==FLOW.BROWSING)return;renderCart();transitionFlow(FLOW.CART_REVIEW);if(!openSheet('#cartsheet'))transitionFlow(FLOW.BROWSING);};
 const closeCart=()=>{closeSheet('#cartsheet');if(flow.state===FLOW.CART_REVIEW)transitionFlow(FLOW.BROWSING);};
-document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target!==sh)return;if(sh.id==='cartsheet')closeCart();else closeSheet('#'+sh.id);}));
+document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target!==sh)return;switch(sh.id){case 'cartsheet':closeCart();break;case 'statssheet':case 'setsheet':closeSheet('#'+sh.id);break;case 'trigsheet':if(flow.state!==FLOW.REFLECTION)closeSheet('#trigsheet');break;}}));
 $('#cartbtn').onclick=openCart;
 $('#cartlist').addEventListener('click',e=>{const b=e.target.closest('.add');if(!b)return;cart.splice(+b.dataset.ix,1);updateBar();tap(8);if(!cart.length){closeCart();return;}renderCart();});
 $('#cartclose').onclick=closeCart;
@@ -799,9 +804,9 @@ function renderPattern(){
   const rows=a.list.slice(0,4).map(x=>{const st=Math.round(x.rate*100);
     return `<div class="prow"><div class="pl"><span>${TRIGL(x.k)}</span><b>${st} % standgehalten</b></div><div class="ptrack"><i style="width:${st}%"></i><u style="width:${100-st}%"></u></div></div>`;}).join('');
   el.innerHTML=`<div class="card"><h3>Dein Muster</h3><p class="cs">Kritischster Moment: <b style="color:var(--label)">${a.day?a.day[0]:'–'}, ${a.slot?a.slot[0]:'–'}</b>. Häufigster Auslöser beim Nachgeben: <b style="color:var(--label)">${a.worst?TRIGL(a.worst.k):'–'}</b>. Aus ${a.n} Einträgen.</p>${rows}</div>`;}
-$('#statsbtn').onclick=$('#navstats').onclick=()=>{renderStats();openSheet('#statssheet');};
+$('#statsbtn').onclick=$('#navstats').onclick=()=>{if(flow.state!==FLOW.BROWSING)return;renderStats();openSheet('#statssheet');};
 $('#statsclose').onclick=()=>closeSheet('#statssheet');
-$('#opensettings').onclick=()=>{closeSheet('#statssheet');$('#wKg').value=S.weight;$('#wYr').value=S.year;$('#wRate').value=(S.rate==null?7:S.rate);$('#wWhy').value=S.why||'';$('#wReward').value=S.reward||'';$('#wLetter').value=S.letter||'';openSheet('#setsheet');};
+$('#opensettings').onclick=()=>{$('#wKg').value=S.weight;$('#wYr').value=S.year;$('#wRate').value=(S.rate==null?7:S.rate);$('#wWhy').value=S.why||'';$('#wReward').value=S.reward||'';$('#wLetter').value=S.letter||'';openSheet('#setsheet');};
 $('#setclose').onclick=()=>{const v=parseFloat($('#wKg').value);if(v>=35&&v<=250)S.weight=Math.round(v);
   const y=parseInt($('#wYr').value);if(y>=1920&&y<=2015)S.year=y;
   const rt=parseFloat($('#wRate').value);if(rt>=0&&rt<=15)S.rate=rt;
@@ -810,7 +815,7 @@ $('#setclose').onclick=()=>{const v=parseFloat($('#wKg').value);if(v>=35&&v<=250
 $('#resetall').onclick=()=>{if(!confirm('Streak, Bilanz, Muster und Verlauf werden gelöscht. Sicher?'))return;
   S={weight:S.weight,year:S.year,why:S.why,letter:S.letter,reward:S.reward,rate:S.rate,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
   save();updatePill();closeSheet('#setsheet');toast('Zurückgesetzt.');};
-document.addEventListener('keydown',e=>{if(e.key!=='Escape'||$('#lab').classList.contains('on'))return;closeCart();['#trigsheet','#statssheet','#setsheet'].forEach(closeSheet);});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;switch(flow.state){case FLOW.BROWSING:['#trigsheet','#statssheet','#setsheet'].forEach(i=>closeSheet(i));break;case FLOW.CART_REVIEW:closeCart();break;}});
 renderTabs();renderList();updateBar();updatePill();
 </script>
 </body>
