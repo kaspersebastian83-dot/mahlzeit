@@ -270,11 +270,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .tl .st .tx b{font-weight:600;color:#FF6B5E}
 .tl .st:last-child{padding-bottom:0}
 
-.bodysvg{display:block;width:100%;height:auto}
-.hs{animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.22;r:11}50%{opacity:0;r:22}}
-.units{font-size:13.5px;color:var(--lbl2);line-height:1.5;margin-top:14px;padding-top:14px;border-top:.5px solid var(--sep2)}
-.units b{color:#fff;font-weight:600}
+.anatomy{margin:44px 16px 0}
+.anatomyhead{margin:0 4px;font-size:28px;font-weight:750;letter-spacing:-.035em;line-height:1.05}
+.anatomysub{margin:10px 4px 0;font-size:14px;color:var(--lbl2);line-height:1.45}
+.anatomylist{display:grid;gap:28px;margin-top:22px}
+.anatomycard{overflow:hidden;background:#171719;border:1px solid rgba(255,255,255,.1);border-radius:20px;box-shadow:0 18px 44px rgba(0,0,0,.24)}
+.anatomycard img{display:block;width:100%;height:auto;background:#101112}
+.anatomycard:first-child img{aspect-ratio:1;object-fit:cover;object-position:center}
+.anatomycopy{padding:19px 18px 20px}
+.anatomycopy h3{margin:0;font-size:22px;font-weight:700;letter-spacing:-.025em;line-height:1.15}
+.anatomycopy p{margin:9px 0 0;font-size:15px;color:rgba(255,255,255,.72);line-height:1.5}
+.anatomylabel{display:block;margin-top:17px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1);font-size:10.5px;font-weight:700;letter-spacing:.1em;line-height:1.4;color:#C98272;text-transform:uppercase}
+@media (min-width:480px){.anatomy{margin-left:20px;margin-right:20px}.anatomyhead,.anatomysub{margin-left:8px;margin-right:8px}.anatomycopy{padding:21px 22px 22px}}
 .quad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .q{background:var(--elev2);border-radius:14px;padding:11px 6px;text-align:center}
 .q .qn{font-size:19px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
@@ -619,17 +626,6 @@ function commitProceed(order){
 }
 const burn=(k,met)=>Math.round(k/(met*3.5*S.weight/200));
 const sevCol=r=>r>=1?'#FF453A':r>=.5?'#FF9F0A':'#FFD60A';
-
-function bodyMap(r){
-  const sp=[{x:100,y:30,r:r.salt,l:'Gehirn',v:'Blutdruck ↑',s:'l',ly:30},
-            {x:88,y:84,r:r.sat,l:'Herz & Arterien',v:'LDL / Plaque ↑',s:'r',ly:76},
-            {x:116,y:118,r:r.kcal,l:'Leber',v:'Verfettung ↑',s:'r',ly:130},
-            {x:86,y:136,r:r.sug,l:'Bauchspeicheldrüse',v:'Insulinspitze',s:'l',ly:150}];
-  const max=Math.max(...sp.map(x=>x.r));
-  const g=sp.map(x=>{const c=sevCol(x.r),R=6+cap(x.r)*3.4,lx=x.s==='l'?12:188,an=x.s==='l'?'start':'end',el=x.s==='l'?42:158;
-    return `${x.r===max?`<circle class="hs" cx="${x.x}" cy="${x.y}" r="11" fill="${c}"/>`:''}<circle cx="${x.x}" cy="${x.y}" r="${R}" fill="${c}"/><path d="M${x.x},${x.y} L${el},${x.ly} L${lx},${x.ly}" stroke="${c}" stroke-width="1" fill="none" opacity=".5"/><text x="${lx}" y="${x.ly-4}" text-anchor="${an}" fill="#fff" font-size="8.4" font-weight="600" font-family="-apple-system,Inter,sans-serif">${x.l}</text><text x="${lx}" y="${x.ly+7}" text-anchor="${an}" fill="${c}" font-size="8" font-family="-apple-system,Inter,sans-serif">${x.v}</text>`;}).join('');
-  return `<svg class="bodysvg" viewBox="0 0 200 208" role="img" aria-label="Betroffene Organe"><g opacity=".26" stroke="#fff" stroke-width="1.1" fill="none" stroke-linejoin="round"><circle cx="100" cy="30" r="15"/><path d="M94,45 h12 v7 h-12 z"/><path d="M74,55 Q100,47 126,55 L132,98 L128,146 Q126,172 120,194 L80,194 Q74,172 72,146 L68,98 Z"/><path d="M74,57 L52,74 L46,116"/><path d="M126,57 L148,74 L154,116"/></g>${g}</svg>`;
-}
 function timeline(t,r){
   const st=[{tm:'0 min',tx:'Erster Bissen. Dein Belohnungssystem feuert. <b>Deshalb sitzt du hier.</b>'}];
   if(r.sug>=.3)st.push({tm:'15 min',tx:`${t.sug.toFixed(0)} g Zucker sind im Blut. <b>Glukose schießt steil nach oben.</b>`});
@@ -734,12 +730,36 @@ function showBefund(){
     <p class="lsub">in deinem Körper, wenn du jetzt bestellst</p>
     <div class="lcard">${timeline(t,r)}</div>
 
-    <h2 class="lsect">Wo es sich festsetzt</h2>
-    <p class="lsub">Skaliert an dieser Bestellung</p>
-    <div class="lcard">
-      ${bodyMap(r)}
-      <div class="units">Das sind <b>${Math.round(t.sug/3)} Würfel Zucker</b>, <b>${Math.round(t.fat/4.5)} Teelöffel Fett</b> und <b>${(t.salt/6).toFixed(1)} Teelöffel Salz</b>. Auf einem Teller würdest du das nicht essen.</div>
-    </div>
+    <section class="anatomy" aria-labelledby="anatomyheading">
+      <h2 class="anatomyhead" id="anatomyheading">Was dieses Muster belastet</h2>
+      <p class="anatomysub">Nicht durch eine Mahlzeit allein — sondern durch Wiederholung.</p>
+      <div class="anatomylist">
+        <article class="anatomycard">
+          <img src="assets/redroom/redroom-heart-arteries.jpeg" alt="Dunkle anatomische Darstellung von Herz und Arterien" loading="lazy" decoding="async">
+          <div class="anatomycopy">
+            <h3>Arterien &amp; Herz</h3>
+            <p>Wiederholt hohe Mengen an gesättigtem Fett tragen über Zeit zu einer höheren LDL-Belastung bei.</p>
+            <small class="anatomylabel">Langfristige kardiovaskuläre Evidenz</small>
+          </div>
+        </article>
+        <article class="anatomycard">
+          <img src="assets/redroom/redroom-liver.jpeg" alt="Dunkle anatomische Darstellung einer Leber" loading="lazy" decoding="async">
+          <div class="anatomycopy">
+            <h3>Leber</h3>
+            <p>Wiederholter Energieüberschuss kann die Fetteinlagerung in der Leber fördern.</p>
+            <small class="anatomylabel">Energieüberschuss · Langfristiges Muster</small>
+          </div>
+        </article>
+        <article class="anatomycard">
+          <img src="assets/redroom/redroom-metabolism.jpeg" alt="Dunkle anatomische Darstellung von Bauchspeicheldrüse und umgebenden Organen" loading="lazy" decoding="async">
+          <div class="anatomycopy">
+            <h3>Stoffwechsel</h3>
+            <p>Große stark verarbeitete Mahlzeiten können ausgeprägte postprandiale Stoffwechselreaktionen auslösen.</p>
+            <small class="anatomylabel">Kontrollierte postprandiale Studien</small>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <h2 class="lsect">Tagesgrenzen</h2>
     <p class="lsub">WHO: max. 5 g Salz, ideal 25 g freier Zucker</p>
