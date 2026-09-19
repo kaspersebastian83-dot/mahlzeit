@@ -429,17 +429,23 @@ const MS=[{d:7,l:'Eine Woche'},{d:30,l:'Ein Monat'},{d:90,l:'Ein Quartal'},{d:36
 const KEY='mahlzeit.v1';
 const localDate=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const today=()=>localDate(new Date());
-let S={weight:80,year:1983,why:'',letter:'',reward:'',rate:7,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
-try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+const validDate=d=>{if(typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;const x=new Date(`${d}T00:00:00Z`);return Number.isFinite(x.getTime())&&x.toISOString().slice(0,10)===d;};
+const normalizeRelapses=a=>Array.isArray(a)?[...new Set(a.filter(validDate))].sort():[];
+let S={weight:80,year:1983,why:'',letter:'',reward:'',rate:7,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()},loadedState=false;
+try{const r=localStorage.getItem(KEY),p=r&&JSON.parse(r);if(p&&typeof p==='object'&&!Array.isArray(p)){S=Object.assign(S,p);loadedState=true;}}catch(e){}
+S.relapses=normalizeRelapses(S.relapses);
+S.start=validDate(S.start)?S.start:today();
+S.msDone=Array.isArray(S.msDone)?[...new Set(S.msDone.filter(d=>MS.some(m=>m.d===d)))]:[];
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+if(loadedState)save();
 let cart=[],waitTimer=null;const WAIT=60;
 const $=s=>document.querySelector(s);
 const fmt=n=>n.toLocaleString('de-DE',{maximumFractionDigits:0});
 const eur=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
 const eur0=n=>Math.round(n).toLocaleString('de-DE')+' €';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const daysSince=d=>Math.floor((new Date(today())-new Date(d))/864e5);
-const streak=()=>{const l=S.relapses.length?S.relapses[S.relapses.length-1]:S.start;return Math.max(0,daysSince(l));};
+const daysSince=d=>validDate(d)?Math.floor((Date.parse(`${today()}T00:00:00Z`)-Date.parse(`${d}T00:00:00Z`))/864e5):0;
+const streak=()=>{const t=today();let l=null;S.relapses.forEach(d=>{if(validDate(d)&&d<=t&&(!l||d>l))l=d;});const n=daysSince(l||S.start);return Number.isFinite(n)?Math.max(0,n):0;};
 const cap=(x,m=2)=>Math.min(x,m);
 const RATE=()=>Math.max(0,(S.rate==null?7:S.rate))/100;
 const pctTxt=()=>(RATE()*100).toFixed(1).replace('.',',');
@@ -458,7 +464,7 @@ $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b
 $('#list').addEventListener('click',e=>{const b=e.target.closest('.cell');if(!b)return;const it=byId(b.dataset.id);cart.push(it);updateBar();tap(10);toast(`${it.n} hinzugefügt`);});
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),1900);}
 function updateBar(){const n=cart.length,k=cart.reduce((a,b)=>a+b.kcal,0);$('#cartbtn').disabled=!n;$('#cartsum').textContent=n?`${n} · ${fmt(k)} kcal`:'';}
-function updatePill(){const s=streak();$('#greet').textContent=s===0?'Heute schon geschwächelt. Neuer Versuch ab jetzt.':`Seit ${s} ${s===1?'Tag':'Tagen'} nicht hier gewesen. Willst du das aufgeben?`;}
+function updatePill(){const s=streak(),relapsedToday=S.relapses.includes(today());$('#greet').textContent=relapsedToday?'Heute schon geschwächelt. Neuer Versuch ab jetzt.':s===0?'Heute geht es los. Mach den ersten vollen Tag daraus.':`Seit ${s} ${s===1?'Tag':'Tagen'} nicht hier gewesen. Willst du das aufgeben?`;}
 new IntersectionObserver(([e])=>$('#nav').classList.toggle('stuck',!e.isIntersecting),{threshold:1}).observe($('#lt'));
 
 /* ── logging & patterns ── */
@@ -631,7 +637,7 @@ function showBefund(){
   $('#abort').onclick=()=>{clearInterval(waitTimer);tap(14);S.saves++;S.kcalAvoided+=t.kcal;S.euroSaved+=t.p;save();cart=[];updateBar();updatePill();askTrigger('stop',t,()=>showWin(t));};
   pb.onclick=()=>{if(pb.disabled)return;clearInterval(waitTimer);
     const st=streak();if(st>S.record)S.record=st;
-    if(S.relapses[S.relapses.length-1]!==today())S.relapses.push(today());
+    S.relapses=normalizeRelapses(S.relapses.concat(today()));
     save();cart=[];updateBar();updatePill();
     askTrigger('go',t,()=>{closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
 }
