@@ -516,7 +516,29 @@ function askTrigger(kind,t,cb){
 }
 
 /* ── Befund ── */
-const totals=()=>cart.reduce((a,i)=>({kcal:a.kcal+i.kcal,fat:a.fat+i.fat,sat:a.sat+i.sat,sug:a.sug+i.sug,salt:a.salt+i.salt,p:a.p+i.p}),{kcal:0,fat:0,sat:0,sug:0,salt:0,p:0});
+const snapshotOrder=order=>Object.freeze(order.map(({id,n,e,p,kcal,fat,sat,sug,salt})=>Object.freeze({id,n,e,p,kcal,fat,sat,sug,salt})));
+const totals=(order=cart)=>order.reduce((a,i)=>({kcal:a.kcal+i.kcal,fat:a.fat+i.fat,sat:a.sat+i.sat,sug:a.sug+i.sug,salt:a.salt+i.salt,p:a.p+i.p}),{kcal:0,fat:0,sat:0,sug:0,salt:0,p:0});
+function commitAbort(order){
+  if(flow.outcomeCommitted)return false;
+  const t=totals(order);
+  S.saves++;
+  S.kcalAvoided+=t.kcal;
+  S.euroSaved+=t.p;
+  save();
+  flow.outcome='stop';
+  flow.outcomeCommitted=true;
+  return true;
+}
+function commitProceed(order){
+  if(flow.outcomeCommitted)return false;
+  const st=streak();
+  if(st>S.record)S.record=st;
+  S.relapses=normalizeRelapses(S.relapses.concat(today()));
+  save();
+  flow.outcome='go';
+  flow.outcomeCommitted=true;
+  return true;
+}
 const burn=(k,met)=>Math.round(k/(met*3.5*S.weight/200));
 const sevCol=r=>r>=1?'#FF453A':r>=.5?'#FF9F0A':'#FFD60A';
 
@@ -543,9 +565,10 @@ function timeline(t,r){
 }
 
 function showBefund(){
-  flow.order=cart.slice();
+  if(flow.state!==FLOW.CART_REVIEW)return;
+  flow.order=snapshotOrder(cart);
   transitionFlow(FLOW.RED_ROOM);
-  const t=totals();
+  const order=flow.order,t=totals(order);
   const r={kcal:t.kcal/REF.kcal,fat:t.fat/REF.fat,sat:t.sat/REF.sat,sug:t.sug/REF.sug,salt:t.salt/REF.salt};
   const f=FACTS[Math.floor(Math.random()*FACTS.length)];
   const worst=Object.entries(r).sort((a,b)=>b[1]-a[1])[0][0];
@@ -561,7 +584,7 @@ function showBefund(){
     <div class="labnav">Befund</div>
     <div class="labpad">
       <h1 class="labtitle">${HEAD[worst]}</h1>
-      <p class="labitems">${cart.map(i=>i.n).join(' · ')}<br>${fmt(t.kcal)} kcal · ${eur(t.p)}</p>
+      <p class="labitems">${order.map(i=>i.n).join(' · ')}<br>${fmt(t.kcal)} kcal · ${eur(t.p)}</p>
     </div>
     ${patternHit()}
 
@@ -660,13 +683,11 @@ function showBefund(){
     else{pb.textContent=`Trotzdem essen (${left})`;wl.textContent=`Der Knopf öffnet in ${left} Sekunden.`;}},1000);
 
   const resumeReflection=()=>{if(flow.outcomeCommitted&&flow.state===FLOW.REFLECTION){openSheet('#trigsheet');return true;}return false;};
-  $('#abort').onclick=()=>{if(resumeReflection()||![FLOW.CRAVING_WAIT,FLOW.DECISION].includes(flow.state))return;clearInterval(waitTimer);flow.waitDeadline=null;flow.outcome='stop';tap(14);S.saves++;S.kcalAvoided+=t.kcal;S.euroSaved+=t.p;save();flow.outcomeCommitted=true;cart=[];updateBar();updatePill();askTrigger('stop',t,()=>showWin(t));};
+  $('#abort').onclick=()=>{if(resumeReflection()||![FLOW.CRAVING_WAIT,FLOW.DECISION].includes(flow.state)||!commitAbort(order))return;clearInterval(waitTimer);flow.waitDeadline=null;tap(14);cart=[];updateBar();updatePill();askTrigger('stop',totals(order),()=>showWin(totals(order)));};
   pb.onclick=()=>{if(pb.disabled||resumeReflection()||flow.state!==FLOW.DECISION)return;clearInterval(waitTimer);
-    flow.waitDeadline=null;flow.outcome='go';
-    const st=streak();if(st>S.record)S.record=st;
-    S.relapses=normalizeRelapses(S.relapses.concat(today()));
-    save();flow.outcomeCommitted=true;cart=[];updateBar();updatePill();
-    askTrigger('go',t,()=>{transitionFlow(FLOW.BROWSING);closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
+    if(!commitProceed(order))return;
+    flow.waitDeadline=null;cart=[];updateBar();updatePill();
+    askTrigger('go',totals(order),()=>{transitionFlow(FLOW.BROWSING);closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
 }
 function closeLab(){clearInterval(waitTimer);$('#lab').classList.remove('on');document.body.style.overflow='';$('#labinner').innerHTML='';}
 
