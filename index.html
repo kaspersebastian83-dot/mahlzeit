@@ -438,6 +438,25 @@ S.start=validDate(S.start)?S.start:today();
 S.msDone=Array.isArray(S.msDone)?[...new Set(S.msDone.filter(d=>MS.some(m=>m.d===d)))]:[];
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 if(loadedState)save();
+const FLOW=Object.freeze({
+  BROWSING:'BROWSING',CART_REVIEW:'CART_REVIEW',RED_ROOM:'RED_ROOM',CRAVING_WAIT:'CRAVING_WAIT',
+  DECISION:'DECISION',GREEN_ROOM:'GREEN_ROOM',REFLECTION:'REFLECTION'
+});
+const FLOW_TRANSITIONS={
+  [FLOW.BROWSING]:[FLOW.CART_REVIEW],
+  [FLOW.CART_REVIEW]:[FLOW.BROWSING,FLOW.RED_ROOM],
+  [FLOW.RED_ROOM]:[FLOW.CRAVING_WAIT],
+  [FLOW.CRAVING_WAIT]:[FLOW.DECISION,FLOW.REFLECTION],
+  [FLOW.DECISION]:[FLOW.REFLECTION],
+  [FLOW.REFLECTION]:[FLOW.GREEN_ROOM,FLOW.BROWSING],
+  [FLOW.GREEN_ROOM]:[FLOW.BROWSING]
+};
+let flow={state:FLOW.BROWSING,outcome:null,order:null,waitDeadline:null,outcomeCommitted:false};
+function transitionFlow(nextState){
+  if(!(FLOW_TRANSITIONS[flow.state]||[]).includes(nextState))throw new Error(`Illegal flow transition: ${flow.state} -> ${nextState}`);
+  flow.state=nextState;
+  if(nextState===FLOW.BROWSING)flow={state:FLOW.BROWSING,outcome:null,order:null,waitDeadline:null,outcomeCommitted:false};
+}
 let cart=[],waitTimer=null;const WAIT=60;
 const $=s=>document.querySelector(s);
 const fmt=n=>n.toLocaleString('de-DE',{maximumFractionDigits:0});
@@ -485,10 +504,12 @@ function patternHit(){
   return `<div class="patternhit">${d}, ${s} — <b>das ist genau dein Muster.</b> Hier kippst du sonst um.</div>`;
 }
 function askTrigger(kind,t,cb){
+  transitionFlow(FLOW.REFLECTION);
   $('#trigH').textContent=kind==='stop'?'Was hättest du fast gegessen — und warum?':'Kurz ehrlich: was war los?';
   $('#trigSub').textContent=kind==='stop'?'Ein Tipp. Nach ein paar Einträgen zeigt dir die App dein Muster.':'Kein Urteil. Nur damit du dein Muster irgendwann siehst.';
   $('#trigs').innerHTML=TRIGS.map(x=>`<button class="trig" data-k="${x.k}">${x.e} ${x.l}</button>`).join('');
-  const done=k=>{logEvent(kind,k,t);closeSheet('#trigsheet');cb();};
+  let completed=false;
+  const done=k=>{if(completed)return;completed=true;logEvent(kind,k,t);closeSheet('#trigsheet');cb();};
   $('#trigs').onclick=e=>{const b=e.target.closest('.trig');if(b){tap(8);done(b.dataset.k);}};
   $('#trigskip').onclick=()=>done(null);
   openSheet('#trigsheet');
@@ -522,6 +543,8 @@ function timeline(t,r){
 }
 
 function showBefund(){
+  flow.order=cart.slice();
+  transitionFlow(FLOW.RED_ROOM);
   const t=totals();
   const r={kcal:t.kcal/REF.kcal,fat:t.fat/REF.fat,sat:t.sat/REF.sat,sug:t.sug/REF.sug,salt:t.salt/REF.salt};
   const f=FACTS[Math.floor(Math.random()*FACTS.length)];
@@ -630,16 +653,20 @@ function showBefund(){
     requestAnimationFrame(step);}
 
   const pb=$('#proceed'),wl=$('#waitline');let left=WAIT;clearInterval(waitTimer);
-  waitTimer=setInterval(()=>{left--;
-    if(left<=0){clearInterval(waitTimer);pb.disabled=false;pb.classList.add('ready');pb.textContent='Trotzdem essen';wl.textContent='Jetzt ist er offen. Der Drang war vor einer Minute stärker als jetzt.';}
+  flow.waitDeadline=Date.now()+WAIT*1000;
+  transitionFlow(FLOW.CRAVING_WAIT);
+  waitTimer=setInterval(()=>{if(flow.state!==FLOW.CRAVING_WAIT){clearInterval(waitTimer);return;}left--;
+    if(left<=0){clearInterval(waitTimer);flow.waitDeadline=null;transitionFlow(FLOW.DECISION);pb.disabled=false;pb.classList.add('ready');pb.textContent='Trotzdem essen';wl.textContent='Jetzt ist er offen. Der Drang war vor einer Minute stärker als jetzt.';}
     else{pb.textContent=`Trotzdem essen (${left})`;wl.textContent=`Der Knopf öffnet in ${left} Sekunden.`;}},1000);
 
-  $('#abort').onclick=()=>{clearInterval(waitTimer);tap(14);S.saves++;S.kcalAvoided+=t.kcal;S.euroSaved+=t.p;save();cart=[];updateBar();updatePill();askTrigger('stop',t,()=>showWin(t));};
-  pb.onclick=()=>{if(pb.disabled)return;clearInterval(waitTimer);
+  const resumeReflection=()=>{if(flow.outcomeCommitted&&flow.state===FLOW.REFLECTION){openSheet('#trigsheet');return true;}return false;};
+  $('#abort').onclick=()=>{if(resumeReflection()||![FLOW.CRAVING_WAIT,FLOW.DECISION].includes(flow.state))return;clearInterval(waitTimer);flow.waitDeadline=null;flow.outcome='stop';tap(14);S.saves++;S.kcalAvoided+=t.kcal;S.euroSaved+=t.p;save();flow.outcomeCommitted=true;cart=[];updateBar();updatePill();askTrigger('stop',t,()=>showWin(t));};
+  pb.onclick=()=>{if(pb.disabled||resumeReflection()||flow.state!==FLOW.DECISION)return;clearInterval(waitTimer);
+    flow.waitDeadline=null;flow.outcome='go';
     const st=streak();if(st>S.record)S.record=st;
     S.relapses=normalizeRelapses(S.relapses.concat(today()));
-    save();cart=[];updateBar();updatePill();
-    askTrigger('go',t,()=>{closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
+    save();flow.outcomeCommitted=true;cart=[];updateBar();updatePill();
+    askTrigger('go',t,()=>{transitionFlow(FLOW.BROWSING);closeLab();toast('Notiert. Kein Drama. Nächste Gelegenheit zählt.');});};
 }
 function closeLab(){clearInterval(waitTimer);$('#lab').classList.remove('on');document.body.style.overflow='';$('#labinner').innerHTML='';}
 
@@ -678,6 +705,7 @@ function msBlock(){
       <div class="msrow">${cards}</div></div>`;
 }
 function showWin(t){
+  transitionFlow(FLOW.GREEN_ROOM);
   const s=streak(),kg30=t.kcal*104*30/7700;
   $('#wininner').innerHTML=`
     <div class="winnav">Behalten</div>
@@ -723,17 +751,20 @@ function showWin(t){
     <p class="windis">Renditerechnung mit ${pctTxt()} % p. a. nominal, ohne Steuern, Kosten und Inflation. Vergangene Renditen sind keine Zusage für die Zukunft — keine Anlageberatung. Gesundheitsangaben sind allgemeine Studienlage, keine individuelle Prognose.</p>`;
   closeLab();
   $('#win').classList.add('on');$('#win').scrollTop=0;document.body.style.overflow='hidden';tap(20);
-  $('#winclose').onclick=()=>{$('#win').classList.remove('on');$('#wininner').innerHTML='';document.body.style.overflow='';toast('Gut gemacht.');};
+  $('#winclose').onclick=()=>{if(flow.state!==FLOW.GREEN_ROOM)return;transitionFlow(FLOW.BROWSING);$('#win').classList.remove('on');$('#wininner').innerHTML='';document.body.style.overflow='';toast('Gut gemacht.');};
 }
 
 /* ── sheets & wiring ── */
 const openSheet=i=>{$(i).classList.add('on');document.body.style.overflow='hidden';};
 const closeSheet=i=>{$(i).classList.remove('on');if(!document.querySelector('.sheet.on')&&!$('#lab').classList.contains('on')&&!$('#win').classList.contains('on'))document.body.style.overflow='';};
-document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target===sh)closeSheet('#'+sh.id);}));
-$('#cartbtn').onclick=()=>{$('#cartlist').innerHTML=cart.map((i,ix)=>`<div class="cell"><span class="ico">${i.e}</span><span class="tx"><b>${i.n}</b><span>${eur(i.p)} · ${i.kcal} kcal</span></span><button class="add" data-ix="${ix}" aria-label="entfernen" style="color:var(--red)">−</button></div>`).join('');openSheet('#cartsheet');};
-$('#cartlist').addEventListener('click',e=>{const b=e.target.closest('.add');if(!b)return;cart.splice(+b.dataset.ix,1);updateBar();tap(8);if(!cart.length){closeSheet('#cartsheet');return;}$('#cartbtn').click();});
-$('#cartclose').onclick=()=>closeSheet('#cartsheet');
-$('#tobefund').onclick=()=>{closeSheet('#cartsheet');showBefund();};
+const renderCart=()=>{$('#cartlist').innerHTML=cart.map((i,ix)=>`<div class="cell"><span class="ico">${i.e}</span><span class="tx"><b>${i.n}</b><span>${eur(i.p)} · ${i.kcal} kcal</span></span><button class="add" data-ix="${ix}" aria-label="entfernen" style="color:var(--red)">−</button></div>`).join('');};
+const openCart=()=>{if(flow.state!==FLOW.BROWSING)return;renderCart();transitionFlow(FLOW.CART_REVIEW);openSheet('#cartsheet');};
+const closeCart=()=>{closeSheet('#cartsheet');if(flow.state===FLOW.CART_REVIEW)transitionFlow(FLOW.BROWSING);};
+document.querySelectorAll('.sheet').forEach(sh=>sh.addEventListener('click',e=>{if(e.target!==sh)return;if(sh.id==='cartsheet')closeCart();else closeSheet('#'+sh.id);}));
+$('#cartbtn').onclick=openCart;
+$('#cartlist').addEventListener('click',e=>{const b=e.target.closest('.add');if(!b)return;cart.splice(+b.dataset.ix,1);updateBar();tap(8);if(!cart.length){closeCart();return;}renderCart();});
+$('#cartclose').onclick=closeCart;
+$('#tobefund').onclick=()=>{if(flow.state!==FLOW.CART_REVIEW)return;closeSheet('#cartsheet');showBefund();};
 function renderStats(){const s=streak();
   $('#sStreak').textContent=s;$('#sStreakL').textContent=s===1?'Tag ohne':'Tage ohne';
   $('#sSaves').textContent=S.saves;$('#sRecord').textContent=Math.max(S.record,s);
@@ -758,7 +789,7 @@ $('#setclose').onclick=()=>{const v=parseFloat($('#wKg').value);if(v>=35&&v<=250
 $('#resetall').onclick=()=>{if(!confirm('Streak, Bilanz, Muster und Verlauf werden gelöscht. Sicher?'))return;
   S={weight:S.weight,year:S.year,why:S.why,letter:S.letter,reward:S.reward,rate:S.rate,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
   save();updatePill();closeSheet('#setsheet');toast('Zurückgesetzt.');};
-document.addEventListener('keydown',e=>{if(e.key!=='Escape'||$('#lab').classList.contains('on'))return;['#cartsheet','#trigsheet','#statssheet','#setsheet'].forEach(closeSheet);});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape'||$('#lab').classList.contains('on'))return;closeCart();['#trigsheet','#statssheet','#setsheet'].forEach(closeSheet);});
 renderTabs();renderList();updateBar();updatePill();
 </script>
 </body>
