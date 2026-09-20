@@ -521,9 +521,11 @@ const MENU=[
   {id:'bacon',n:'Bacon & Egg McMuffin',e:'🥓',p:3.99,kcal:350,fat:17,sat:7,sug:3,salt:1.9},
   {id:'panc',n:'Pancakes mit Sirup',e:'🥞',p:4.29,kcal:450,fat:12,sat:4,sug:33,salt:1},
   {id:'latte',n:'Latte Macchiato',e:'☕',p:2.99,kcal:120,fat:5,sat:3,sug:9,salt:.2}]}];
-const MENU_BASE_IDS=new Set(['dermbacon','derm','tasty','mccrispy','mcrib','mcveggiets','mcdoublechili','bmac','roy','royalcheese','mcch','fish','wrapchhs','wrapveghs','wrapmozz']);
-const MENU_SIDE_IDS=['pm','pg'];
-const MENU_DRINK_IDS=['cola5','zero','fanta','sprite05','spritezero05','mezzo05','liptonzero05','lift05','wasser','watersparkling'];
+// McMenü reference prices: observed delivery listing, McDonald's Packhofpassage Braunschweig, September 2026.
+const MENU_REFERENCE_PRICES=Object.freeze({dermbacon:14.89,derm:14.59,tasty:13.99,mccrispy:11.39,mcrib:10.99,mcveggiets:9.99,bmac:12.59,roy:12.39,royalcheese:11.79,mcch:11.49,fish:9.99,wrapchhs:10.99,wrapveghs:10.99,wrapmozz:11.99,n6:10.29,n9:11.89,mp6:10.29,mp9:11.89});
+const MENU_BASE_IDS=new Set(Object.keys(MENU_REFERENCE_PRICES));
+const MENU_SIDE_IDS=['pg','snacksalad'];
+const MENU_DRINK_IDS=['cola5','zero','mezzo05','fanta','sprite05','spritezero05','liptonzero05','wasser','watersparkling'];
 const MENU_SAUCE_IDS=['sauceketchup','saucemayo','saucecurry','saucesweetandsour','saucebbq','saucemustard','saucechili','saucesourcream'];
 const DOSE_REF={sat:20,sug:90,salt:6};
 const ORDERS_PER_YEAR=2*52;
@@ -608,17 +610,23 @@ function updateBar(){const n=cart.length,k=cart.reduce((a,b)=>a+b.kcal,0);$('#ca
 /* ── transient menu builder ── */
 let menuDraft=null,menuReturnFocus=null;
 const menuItems=()=>menuDraft?[byId(menuDraft.baseId),byId(menuDraft.sideId),byId(menuDraft.drinkId),byId(menuDraft.sauceId)].filter(Boolean):[];
+function buildMenuCartItem(draft){
+  const base=byId(draft.baseId),side=byId(draft.sideId),drink=byId(draft.drinkId),sauce=byId(draft.sauceId);
+  const componentTotals=totals([base,side,drink,sauce].filter(Boolean));
+  const price=MENU_REFERENCE_PRICES[base.id]+(sauce?sauce.p:0);
+  return {id:`mcmenu:${base.id}:${side.id}:${drink.id}:${sauce?sauce.id:'none'}`,n:[`${base.n} McMenü`,side.n,drink.n,sauce&&sauce.n].filter(Boolean).join(' · '),e:base.e,p:price,kcal:componentTotals.kcal,fat:componentTotals.fat,sat:componentTotals.sat,sug:componentTotals.sug,salt:componentTotals.salt};
+}
 const optionRows=(ids,selected,step)=>ids.map(id=>{const it=byId(id),on=id===selected;return `<button type="button" class="menuoption" data-step="${step}" data-id="${id}" aria-pressed="${on}"><span class="optcopy"><b>${it.n}</b><span>${fmt(it.kcal)} kcal · ${eur(it.p)}</span></span><i class="check" aria-hidden="true">${on?'✓':''}</i></button>`;}).join('');
 function renderMenuBuilder(){
   if(!menuDraft)return;
-  const base=byId(menuDraft.baseId),ready=Boolean(menuDraft.sideId&&menuDraft.drinkId),items=menuItems(),t=totals(items);
+  const base=byId(menuDraft.baseId),ready=Boolean(menuDraft.sideId&&menuDraft.drinkId),items=menuItems(),t=totals(items),price=MENU_REFERENCE_PRICES[base.id]+(byId(menuDraft.sauceId)?.p||0);
   $('#menusub').textContent=`${base.n} zusammenstellen`;
   $('#menubuilder').innerHTML=`
-    <section class="menustep"><h3>1 · Pommes wählen</h3><div class="menuoptions">${optionRows(MENU_SIDE_IDS,menuDraft.sideId,'side')}</div></section>
+    <section class="menustep"><h3>1 · Beilage wählen</h3><div class="menuoptions">${optionRows(MENU_SIDE_IDS,menuDraft.sideId,'side')}</div></section>
     <section class="menustep" ${menuDraft.sideId?'':'hidden'}><h3>2 · Getränk wählen</h3><div class="menuoptions">${optionRows(MENU_DRINK_IDS,menuDraft.drinkId,'drink')}</div></section>
-    <section class="menustep" ${menuDraft.drinkId?'':'hidden'}><h3>3 · Sauce <span style="text-transform:none;font-weight:400">optional</span></h3><div class="menuoptions"><button type="button" class="menuoption" data-step="sauce" data-id="" aria-pressed="${!menuDraft.sauceId}"><span class="optcopy"><b>Keine Sauce</b><span>Ohne zusätzliche Sauce</span></span><i class="check" aria-hidden="true">${!menuDraft.sauceId?'✓':''}</i></button>${optionRows(MENU_SAUCE_IDS,menuDraft.sauceId,'sauce')}</div></section>
-    ${ready?`<div class="menusummary" aria-live="polite"><b>${base.n}</b>${items.slice(1).map(i=>`<span>+ ${i.n}</span>`).join('')}<span class="menutotal">${fmt(t.kcal)} kcal · ${eur(t.p)}</span></div>`:''}
-    <p class="menuprice">Preis = Summe der Referenzpreise der gewählten Komponenten; kein verbindlicher McMenü-Preis.</p>
+    <section class="menustep" ${menuDraft.drinkId?'':'hidden'}><h3>3 · Optionales Extra</h3><p class="menuprice" style="margin:0 0 8px">Sauce hinzufügen</p><div class="menuoptions"><button type="button" class="menuoption" data-step="sauce" data-id="" aria-pressed="${!menuDraft.sauceId}"><span class="optcopy"><b>Keine Sauce</b><span>Ohne zusätzliche Sauce</span></span><i class="check" aria-hidden="true">${!menuDraft.sauceId?'✓':''}</i></button>${optionRows(MENU_SAUCE_IDS,menuDraft.sauceId,'sauce')}</div></section>
+    ${ready?`<div class="menusummary" aria-live="polite"><b>${base.n}</b>${items.slice(1).map(i=>`<span>+ ${i.n}</span>`).join('')}<span class="menutotal">${fmt(t.kcal)} kcal · ${eur(price)}</span></div>`:''}
+    <p class="menuprice">McMenü-Referenzpreis. Der tatsächliche Preis kann je Restaurant und Bestellweg abweichen.${menuDraft.sauceId?' Optionales Extra im angezeigten Preis enthalten.':''}</p>
     <div class="sheetpad" style="margin-top:18px"><button class="btn" id="addmenu" style="width:100%" ${ready?'':'disabled'}>Menü hinzufügen</button></div>`;
 }
 function openMenu(base,trigger){
@@ -630,7 +638,7 @@ function closeMenu(){
   if(wasOpen&&menuReturnFocus&&document.contains(menuReturnFocus))menuReturnFocus.focus();menuReturnFocus=null;
 }
 $('#menubuilder').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuDraft)return;if(b.id==='addmenu'){
-  if(!menuDraft.sideId||!menuDraft.drinkId)return;cart.push(...menuItems());updateBar();tap(10);closeMenu();toast('Menü hinzugefügt');return;
+  if(!menuDraft.sideId||!menuDraft.drinkId)return;cart.push(buildMenuCartItem(menuDraft));updateBar();tap(10);closeMenu();toast('Menü hinzugefügt');return;
  }
  if(!b.matches('.menuoption'))return;menuDraft[`${b.dataset.step}Id`]=b.dataset.id||null;renderMenuBuilder();
 });
