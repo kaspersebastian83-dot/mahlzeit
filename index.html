@@ -144,12 +144,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .frow+.frow::before{content:'';position:absolute;left:14px;right:0;top:0;height:.5px;background:var(--sep)}
 .frow label{font-size:16px;flex:1}
 .frow input{width:110px;text-align:right;border:0;background:none;font:inherit;font-size:16px;color:var(--label2)}
+.frow select{width:190px;text-align:right;border:0;background:none;font:inherit;font-size:16px;color:var(--label2);appearance:auto}
 .fstack{padding:12px 14px;position:relative}
 .fstack+.fstack::before,.frow+.fstack::before{content:'';position:absolute;left:14px;right:0;top:0;height:.5px;background:var(--sep)}
 .fstack label{display:block;font-size:13px;color:var(--label2);margin-bottom:7px}
 .fstack input,.fstack textarea{width:100%;border:0;background:none;font:inherit;font-size:16px;color:var(--label);line-height:1.45}
 .fstack textarea{min-height:96px;resize:vertical}
 .fnote{padding:0 32px 18px;font-size:13px;color:var(--label2);line-height:1.4;margin-top:-10px}
+.energyestimate{margin-top:-4px}.energyestimate .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--label2)}
+.energyestimate .value{margin-top:5px;font-size:28px;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.energyestimate .rest,.energyestimate .missing{margin:7px 0 0;font-size:13px;line-height:1.4;color:var(--label2)}
+.energyhelp{margin:0 20px 18px;color:var(--label2);font-size:13px;line-height:1.45}.energyhelp summary{color:var(--label);font-weight:600;cursor:pointer}.energyhelp p{margin:10px 0 0}
 .destruct{width:100%;text-align:center;padding:15px;color:var(--red);font-size:17px;background:var(--sys-elev);border-radius:var(--r-card);margin:0 16px;width:calc(100% - 32px)}
 
 /* stats cards */
@@ -211,6 +216,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .redkcal{margin:clamp(52px,12vh,92px) 0 0;color:#FF453A;font-variant-numeric:tabular-nums}
 .redkcal .n{display:block;font-size:clamp(88px,27vw,136px);font-weight:800;letter-spacing:-.075em;line-height:.72}
 .redkcal .u{display:block;font-size:17px;font-weight:700;letter-spacing:.18em;line-height:1;margin:18px 0 0}
+.energyshare{margin:28px 0 0;max-width:330px}.energysharepct{font-size:clamp(30px,9vw,40px);font-weight:750;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}.energysharelabel{margin-top:6px;font-size:14px;font-weight:600;line-height:1.25}.energysharedaily{margin-top:8px;font-size:13px;color:var(--lbl2);font-variant-numeric:tabular-nums}
 .redorder{font-size:18px;font-weight:600;line-height:1.45;overflow-wrap:anywhere;margin:42px 0 0;max-width:480px}
 .redfacts{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px;margin:42px 0 0;padding:28px 0 0;border-top:1px solid rgba(255,255,255,.2)}
 .redfacts div{min-width:0}
@@ -430,9 +436,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
   <p class="sheetsub">Der Befund rechnet und redet mit diesen Angaben.</p>
   <div class="formgroup">
     <div class="frow"><label for="wKg">Gewicht</label><input id="wKg" type="number" inputmode="decimal" min="35" max="250" step="1" placeholder="kg"></div>
+    <div class="frow"><label for="wHeight">Größe</label><input id="wHeight" type="number" inputmode="numeric" min="120" max="230" step="1" placeholder="cm"></div>
     <div class="frow"><label for="wYr">Geburtsjahr</label><input id="wYr" type="number" inputmode="numeric" min="1920" max="2015" placeholder="1983"></div>
+    <div class="frow"><label for="wSex">Geschlecht (für die Formel)</label><select id="wSex"><option value="">Bitte wählen</option><option value="male">Männlich</option><option value="female">Weiblich</option></select></div>
+    <div class="frow"><label for="wActivity">Aktivitätsniveau</label><select id="wActivity"><option value="">Bitte wählen</option><option value="sedentary">Überwiegend sitzend</option><option value="light">Etwas aktiv</option><option value="moderate">Regelmäßig aktiv</option><option value="high">Sehr aktiv</option></select></div>
     <div class="frow"><label for="wRate">Rendite p. a.</label><input id="wRate" type="number" inputmode="decimal" min="0" max="15" step="0.5" placeholder="7 %"></div>
   </div>
+  <div class="card energyestimate" id="energyestimate" aria-live="polite"></div>
+  <details class="energyhelp"><summary>Wie wird das berechnet?</summary><p>Der Ruheenergiebedarf wird mit der Mifflin-St.-Jeor-Gleichung aus Gewicht, Größe, Alter und Geschlecht geschätzt. Anschließend wird ein vereinfachter Aktivitätsfaktor angewendet.</p><p>Das Ergebnis ist eine Näherung für den Erhaltungsbedarf, kein Messwert und keine individuelle Ernährungs- oder Abnehmempfehlung.</p></details>
   <div class="formgroup">
     <div class="fstack"><label for="wWhy">Warum willst du das lassen?</label><input id="wWhy" type="text" maxlength="90" placeholder="Mit 70 noch wandern können"></div>
     <div class="fstack"><label for="wReward">Belohnung beim nächsten Meilenstein</label><input id="wReward" type="text" maxlength="70" placeholder="Das Buch, das ich mir nicht gönne"></div>
@@ -532,8 +543,13 @@ const localDate=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}
 const today=()=>localDate(new Date());
 const validDate=d=>{if(typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;const x=new Date(`${d}T00:00:00Z`);return Number.isFinite(x.getTime())&&x.toISOString().slice(0,10)===d;};
 const normalizeRelapses=a=>Array.isArray(a)?[...new Set(a.filter(validDate))].sort():[];
-let S={weight:80,year:1983,why:'',letter:'',reward:'',rate:7,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()},loadedState=false;
+let S={weight:80,height:null,year:1983,sex:null,activity:null,why:'',letter:'',reward:'',rate:7,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()},loadedState=false;
 try{const r=localStorage.getItem(KEY),p=r&&JSON.parse(r);if(p&&typeof p==='object'&&!Array.isArray(p)){S=Object.assign(S,p);loadedState=true;}}catch(e){}
+const normalizedHeight=v=>{const n=Number(v);return Number.isFinite(n)&&n>=120&&n<=230?Math.round(n):null;};
+const normalizedSex=v=>v==='male'||v==='female'?v:null;
+const ACTIVITY_FACTORS=Object.freeze({sedentary:1.2,light:1.375,moderate:1.55,high:1.725});
+const normalizedActivity=v=>Object.prototype.hasOwnProperty.call(ACTIVITY_FACTORS,v)?v:null;
+S.height=normalizedHeight(S.height);S.sex=normalizedSex(S.sex);S.activity=normalizedActivity(S.activity);
 S.relapses=normalizeRelapses(S.relapses);
 S.start=validDate(S.start)?S.start:today();
 S.msDone=Array.isArray(S.msDone)?[...new Set(S.msDone.filter(d=>MS.some(m=>m.d===d)))]:[];
@@ -566,6 +582,14 @@ const eur=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDi
 const eur0=n=>Math.round(n).toLocaleString('de-DE')+' €';
 const grams=n=>n.toLocaleString('de-DE',{minimumFractionDigits:Number.isInteger(n)?0:1,maximumFractionDigits:1})+' g';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function estimateDailyEnergy(profile){
+  const weight=Number(profile.weight),height=Number(profile.height),year=Number(profile.year),sex=normalizedSex(profile.sex),activity=normalizedActivity(profile.activity),age=new Date().getFullYear()-year;
+  if(!Number.isFinite(weight)||weight<35||weight>250||!Number.isFinite(height)||height<120||height>230||!Number.isInteger(year)||age<18||age>100||!sex||!activity)return null;
+  const resting=10*weight+6.25*height-5*age+(sex==='male'?5:-161),factor=ACTIVITY_FACTORS[activity],daily=resting*factor;
+  return Number.isFinite(resting)&&Number.isFinite(daily)?{age,resting,factor,daily}:null;
+}
+const energyDailyText=daily=>`≈ ${fmt(Math.round(daily/50)*50)} kcal/Tag`;
+const energyRestingText=resting=>`Ruheenergiebedarf ≈ ${fmt(Math.round(resting/10)*10)} kcal/Tag`;
 const daysSince=d=>validDate(d)?Math.floor((Date.parse(`${today()}T00:00:00Z`)-Date.parse(`${d}T00:00:00Z`))/864e5):0;
 const streak=()=>{const t=today();let l=null;S.relapses.forEach(d=>{if(validDate(d)&&d<=t&&(!l||d>l))l=d;});const n=daysSince(l||S.start);return Number.isFinite(n)?Math.max(0,n):0;};
 const RATE=()=>Math.max(0,(S.rate==null?7:S.rate))/100;
@@ -676,6 +700,7 @@ function showBefund(){
   if(flow.state!==FLOW.CONFIRMATION||!flow.order)return;
   transitionFlow(FLOW.RED_ROOM);
   const order=flow.order,t=totals(order);
+  const energy=estimateDailyEnergy(S);
   $('#confirm').classList.remove('on');
   const s=streak();
   const dose=(name,amount,reference)=>{const percentage=amount/reference*100,display=Math.round(percentage);return `<article class="doseitem"><div><h3 class="dosename">${name}</h3><p class="dosegrams">${grams(amount)}</p></div><p class="dosepct ${percentage>=100?'high':''}">${display.toLocaleString('de-DE')} %</p></article>`;};
@@ -688,6 +713,7 @@ function showBefund(){
       <p class="sceneeyebrow">Stopp.</p>
       <h1 class="redheadline" id="redheadline"><span>Das hier</span><span>wolltest du</span><span>gerade essen.</span></h1>
       <div class="redkcal" aria-label="${fmt(t.kcal)} Kilokalorien"><span class="n" aria-hidden="true">${fmt(t.kcal)}</span><span class="u" aria-hidden="true">KCAL</span></div>
+      ${energy?`<div class="energyshare"><div class="energysharepct">≈ ${fmt(Math.round(t.kcal/energy.daily*100))} %</div><div class="energysharelabel">deines geschätzten Tagesenergiebedarfs</div><div class="energysharedaily">Tagesbedarf ≈ ${fmt(Math.round(energy.daily/50)*50)} kcal</div></div>`:''}
       <p class="redorder">${order.map(i=>esc(i.n)).join(' · ')}</p>
       <div class="redfacts" role="list" aria-label="Nährwerte der Bestellung">
         <div role="listitem"><span class="v">${eur(t.p)}</span><span class="l">Preis</span></div>
@@ -955,14 +981,23 @@ function renderPattern(){
   el.innerHTML=`<div class="card"><h3>Dein Muster</h3><p class="cs">Kritischster Moment: <b style="color:var(--label)">${a.day?a.day[0]:'–'}, ${a.slot?a.slot[0]:'–'}</b>. Häufigster Auslöser beim Nachgeben: <b style="color:var(--label)">${a.worst?TRIGL(a.worst.k):'–'}</b>. Aus ${a.n} Einträgen.</p>${rows}</div>`;}
 $('#statsbtn').onclick=$('#navstats').onclick=()=>{if(flow.state!==FLOW.BROWSING)return;renderStats();openSheet('#statssheet');};
 $('#statsclose').onclick=()=>closeSheet('#statssheet');
-$('#opensettings').onclick=()=>{$('#wKg').value=S.weight;$('#wYr').value=S.year;$('#wRate').value=(S.rate==null?7:S.rate);$('#wWhy').value=S.why||'';$('#wReward').value=S.reward||'';$('#wLetter').value=S.letter||'';openSheet('#setsheet');};
+const settingsProfile=()=>({weight:$('#wKg').value,height:$('#wHeight').value,year:$('#wYr').value,sex:$('#wSex').value,activity:$('#wActivity').value});
+function renderEnergyEstimate(){
+  const profile=settingsProfile(),energy=estimateDailyEnergy(profile),year=Number(profile.year),age=new Date().getFullYear()-year,el=$('#energyestimate');
+  if(energy){el.innerHTML=`<div class="eyebrow">GESCHÄTZTER TAGESBEDARF</div><div class="value">${energyDailyText(energy.daily)}</div><p class="rest">Erhaltungsbedarf – kein Abnehmziel<br>${energyRestingText(energy.resting)}</p>`;return;}
+  const message=Number.isInteger(year)&&age<18?'Diese Schätzung ist in Mahlzeit nur für Erwachsene vorgesehen.':'Für eine Schätzung fehlen noch vollständige Angaben.';
+  el.innerHTML=`<div class="eyebrow">GESCHÄTZTER TAGESBEDARF</div><p class="missing">${message}</p>`;
+}
+$('#opensettings').onclick=()=>{$('#wKg').value=S.weight;$('#wHeight').value=S.height??'';$('#wYr').value=S.year;$('#wSex').value=S.sex||'';$('#wActivity').value=S.activity||'';$('#wRate').value=(S.rate==null?7:S.rate);$('#wWhy').value=S.why||'';$('#wReward').value=S.reward||'';$('#wLetter').value=S.letter||'';renderEnergyEstimate();openSheet('#setsheet');};
+['#wKg','#wHeight','#wYr','#wSex','#wActivity'].forEach(selector=>$(selector).addEventListener('input',renderEnergyEstimate));
 $('#setclose').onclick=()=>{const v=parseFloat($('#wKg').value);if(v>=35&&v<=250)S.weight=Math.round(v);
+  S.height=normalizedHeight($('#wHeight').value);S.sex=normalizedSex($('#wSex').value);S.activity=normalizedActivity($('#wActivity').value);
   const y=parseInt($('#wYr').value);if(y>=1920&&y<=2015)S.year=y;
   const rt=parseFloat($('#wRate').value);if(rt>=0&&rt<=15)S.rate=rt;
   S.why=$('#wWhy').value.trim().slice(0,90);S.reward=$('#wReward').value.trim().slice(0,70);S.letter=$('#wLetter').value.trim().slice(0,400);
   save();closeSheet('#setsheet');toast('Gespeichert.');};
 $('#resetall').onclick=()=>{if(!confirm('Streak, Bilanz, Muster und Verlauf werden gelöscht. Sicher?'))return;
-  S={weight:S.weight,year:S.year,why:S.why,letter:S.letter,reward:S.reward,rate:S.rate,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
+  S={weight:S.weight,height:S.height,year:S.year,sex:S.sex,activity:S.activity,why:S.why,letter:S.letter,reward:S.reward,rate:S.rate,log:[],msDone:[],saves:0,kcalAvoided:0,euroSaved:0,relapses:[],record:0,start:today()};
   save();updatePill();closeSheet('#setsheet');toast('Zurückgesetzt.');};
 document.addEventListener('keydown',e=>{
   if(flow.state===FLOW.CONFIRMATION&&e.key==='Tab'){
