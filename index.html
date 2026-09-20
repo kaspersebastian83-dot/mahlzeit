@@ -329,13 +329,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
 .moneycard .n{font-size:clamp(38px,12vw,52px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#5BE58F;font-variant-numeric:tabular-nums}
 .moneycard .t{font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.72);margin-top:12px}
 .moneycard .t b{color:#fff;font-weight:600}
-.chartcard svg{display:block;width:100%;height:auto}
-.clegend{display:flex;justify-content:space-between;font-size:12px;color:var(--label2);margin-top:8px}
-.wstep{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:12px 0;position:relative}
-.wstep+.wstep::before{content:'';position:absolute;left:0;right:0;top:0;height:.5px;background:var(--sep)}
-.wstep .wk{font-size:12.5px;color:var(--green);font-weight:600;padding-top:2px}
-.wstep .wx{font-size:14.5px;line-height:1.45}
-.wstep .wx b{font-weight:600}
+.evidencecopy p{font-size:14.5px;line-height:1.45;margin:0;padding:12px 0}
+.evidencecopy p+p{border-top:.5px solid var(--sep)}
 .mstrack{height:10px;background:var(--sys-fill);border-radius:5px;overflow:hidden;margin:12px 0 10px}
 .mstrack i{display:block;height:100%;background:var(--green);border-radius:5px;transition:width .8s cubic-bezier(.32,.72,0,1)}
 .msrow{display:flex;gap:7px;margin-top:14px}
@@ -420,7 +415,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
   <div class="kpis">
     <div class="kpi"><div class="n" id="sSaves">0</div><div class="l">Abbrüche</div></div>
     <div class="kpi"><div class="n" id="sRecord">0</div><div class="l">Rekord in Tagen</div></div>
-    <div class="kpi"><div class="n" id="sKcal">0</div><div class="l">kcal nie gegessen</div></div>
+    <div class="kpi"><div class="n" id="sKcal">0</div><div class="l">kcal aus abgebrochenen Bestellungen</div></div>
     <div class="kpi"><div class="n" id="sEuro">0 €</div><div class="l">nicht ausgegeben</div></div>
   </div>
   <div class="card"><h3>Letzte 30 Tage</h3><p class="cs">Rot ist ein Rückfall.</p>
@@ -449,7 +444,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px so
     <div class="fstack"><label for="wReward">Belohnung beim nächsten Meilenstein</label><input id="wReward" type="text" maxlength="70" placeholder="Das Buch, das ich mir nicht gönne"></div>
     <div class="fstack"><label for="wLetter">Brief von dir mit 60 an dich heute</label><textarea id="wLetter" maxlength="400" placeholder="Schreib ihn einmal, in Ruhe. Er steht dann über dem roten Knopf."></textarea></div>
   </div>
-  <p class="fnote">Der Brief ist das einzige Element hier, an das du dich nicht gewöhnst. Die Statistiken nutzen sich ab, deine eigene Stimme nicht.</p>
+  <p class="fnote">Dein Grund, deine Belohnung und dein Brief bleiben als persönliche Erinnerungen gespeichert.</p>
   <button class="destruct" id="resetall">Alle Daten löschen</button>
 </div></div>
 
@@ -756,7 +751,7 @@ function showBefund(){
           <img src="assets/redroom/redroom-heart-arteries.jpeg" alt="Dunkle anatomische Darstellung von Herz und Arterien" loading="lazy" decoding="async">
           <div class="anatomycopy">
             <h3>Arterien &amp; Herz</h3>
-            <p>Wiederholt hohe Mengen an gesättigtem Fett tragen über Zeit zu einer höheren LDL-Belastung bei.</p>
+            <p>Ein Ernährungsmuster mit viel gesättigtem Fett kann zu höherem LDL-Cholesterin beitragen.</p>
             <small class="anatomylabel">Langfristige kardiovaskuläre Evidenz</small>
           </div>
         </article>
@@ -764,7 +759,7 @@ function showBefund(){
           <img src="assets/redroom/redroom-liver.jpeg" alt="Dunkle anatomische Darstellung einer Leber" loading="lazy" decoding="async">
           <div class="anatomycopy">
             <h3>Leber</h3>
-            <p>Wiederholter Energieüberschuss kann die Fetteinlagerung in der Leber fördern.</p>
+            <p>Wiederholter Energieüberschuss kann die Einlagerung von Fett in der Leber fördern.</p>
             <small class="anatomylabel">Energieüberschuss · Langfristiges Muster</small>
           </div>
         </article>
@@ -772,7 +767,7 @@ function showBefund(){
           <img src="assets/redroom/redroom-metabolism.jpeg" alt="Dunkle anatomische Darstellung von Bauchspeicheldrüse und umgebenden Organen" loading="lazy" decoding="async">
           <div class="anatomycopy">
             <h3>Stoffwechsel</h3>
-            <p>Große stark verarbeitete Mahlzeiten können ausgeprägte postprandiale Stoffwechselreaktionen auslösen.</p>
+            <p>Große Mahlzeiten können deutliche Stoffwechselreaktionen nach dem Essen auslösen.</p>
             <small class="anatomylabel">Kontrollierte postprandiale Studien</small>
           </div>
         </article>
@@ -788,7 +783,7 @@ function showBefund(){
       <h2 class="decisionhead" id="decisionheading">Jetzt<br>entscheidest du.</h2>
       ${patternHit()}
       ${s>0?`<div class="losswarn">
-        <div class="lw1">Du löschst gleich <b>${s} ${s===1?'Tag':'Tage'}</b>.</div>
+        <div class="lw1">Deine aktuelle Serie endet heute bei <b>${s} ${s===1?'Tag':'Tagen'}</b>.</div>
         <div class="burnstrip">${Array.from({length:Math.min(s,36)},(_,i)=>`<i style="animation-delay:${(i*.05).toFixed(2)}s"></i>`).join('')}</div>
         <div class="lw2">${s>=S.record?'Das ist gerade dein Rekord. Er endet mit diesem Knopf.':`Dein Rekord steht bei ${S.record} Tagen. Bis dahin fehlen ${S.record-s}.`}</div></div>`:''}
       <details class="evidence">
@@ -803,7 +798,7 @@ function showBefund(){
         <button class="bigbtn goon" id="proceed" disabled>Trotzdem essen (${WAIT})</button>
         <div class="waitline" id="waitline">Der Knopf öffnet in ${WAIT} Sekunden.</div>
       </div>
-      <p class="labdis">Nährwerte sind gerundete Richtwerte. Studien zeigen teils Zusammenhänge, keine bewiesenen Ursachen. Kein Ersatz für ärztliche Beratung.</p>
+      <p class="labdis">Nährwerte sind gerundete Richtwerte. Die Hinweise beruhen auf populationsbezogener Studienlage. Sie sagen nicht voraus, was diese einzelne Mahlzeit bei dir bewirkt. Kein Ersatz für ärztliche Beratung.</p>
     </section>`;
 
   $('#lab').classList.add('on');$('#lab').scrollTop=0;syncBodyScroll();
@@ -828,7 +823,7 @@ function showBefund(){
   flow.waitDeadline=Date.now()+WAIT*1000;
   transitionFlow(FLOW.CRAVING_WAIT);
   waitTimer=setInterval(()=>{if(flow.state!==FLOW.CRAVING_WAIT){clearInterval(waitTimer);return;}left--;
-    if(left<=0){clearInterval(waitTimer);flow.waitDeadline=null;transitionFlow(FLOW.DECISION);pb.disabled=false;pb.classList.add('ready');pb.textContent='Trotzdem essen';wl.textContent='Jetzt ist er offen. Der Drang war vor einer Minute stärker als jetzt.';}
+    if(left<=0){clearInterval(waitTimer);flow.waitDeadline=null;transitionFlow(FLOW.DECISION);pb.disabled=false;pb.classList.add('ready');pb.textContent='Trotzdem essen';wl.textContent='Der Knopf ist jetzt offen. Prüfe noch einmal, wie stark der Drang gerade ist.';}
     else{pb.textContent=`Trotzdem essen (${left})`;wl.textContent=`Der Knopf öffnet in ${left} Sekunden.`;}},1000);
 
   const resumeReflection=()=>{if(flow.outcomeCommitted&&flow.state===FLOW.REFLECTION){openSheet('#trigsheet');return true;}return false;};
@@ -841,78 +836,60 @@ function showBefund(){
 function closeLab(){clearInterval(waitTimer);$('#lab').classList.remove('on');$('#labinner').innerHTML='';syncBodyScroll();}
 
 /* ── Gewonnen ── */
-function butterfly(t){
-  const N=30,W=320,H=214,L=14,R=W-14,cy=116,upH=90,dnH=72;
-  const mo=[],we=[];for(let y=0;y<=N;y++){mo.push(fvHabit(t.p,y));we.push(t.kcal*104*y/7700);}
-  const mM=mo[N]||1,wM=we[N]||1,X=y=>L+(R-L)*(y/N);
-  const up=mo.map((v,y)=>`${X(y).toFixed(1)},${(cy-upH*(v/mM)).toFixed(1)}`).join(' ');
-  const dn=we.map((v,y)=>`${X(y).toFixed(1)},${(cy+dnH*(v/wM)).toFixed(1)}`).join(' ');
-  const gl=[10,20,30].map(y=>`<line x1="${X(y)}" y1="12" x2="${X(y)}" y2="${H-16}" stroke="currentColor" stroke-width="1" opacity=".1"/><text x="${X(y)}" y="${H-2}" text-anchor="middle" font-size="9.5" fill="currentColor" opacity=".55">${y} J.</text>`).join('');
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Depotwert gegen Körperfett über 30 Jahre">
-    <defs><linearGradient id="gU" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34C759" stop-opacity=".5"/><stop offset="1" stop-color="#34C759" stop-opacity="0"/></linearGradient>
-    <linearGradient id="gD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF3B30" stop-opacity="0"/><stop offset="1" stop-color="#FF3B30" stop-opacity=".45"/></linearGradient></defs>
-    ${gl}
-    <polygon points="${L},${cy} ${up} ${R},${cy}" fill="url(#gU)"/>
-    <polyline points="${up}" fill="none" stroke="#34C759" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
-    <polygon points="${L},${cy} ${dn} ${R},${cy}" fill="url(#gD)"/>
-    <polyline points="${dn}" fill="none" stroke="#FF3B30" stroke-width="2.8" stroke-dasharray="5 5" stroke-linejoin="round" stroke-linecap="round"/>
-    <line x1="${L}" y1="${cy}" x2="${R}" y2="${cy}" stroke="currentColor" stroke-width="1" opacity=".35"/>
-    <circle cx="${R}" cy="${cy-upH}" r="4.5" fill="#34C759"/><text x="${R-8}" y="${cy-upH-8}" text-anchor="end" font-size="12.5" font-weight="700" fill="#34C759">${eur0(mM)}</text>
-    <circle cx="${R}" cy="${cy+dnH}" r="4.5" fill="#FF3B30"/><text x="${R-8}" y="${cy+dnH+17}" text-anchor="end" font-size="12.5" font-weight="700" fill="#FF3B30">+${wM.toFixed(0)} kg</text>
-  </svg>`;
-}
 function msBlock(){
   const s=streak(),hit=MS.filter(m=>s>=m.d).map(m=>m.d),fresh=hit.filter(d=>!S.msDone.includes(d));
   if(fresh.length){S.msDone=S.msDone.concat(fresh);save();}
   const cards=MS.map(m=>`<div class="msc ${s>=m.d?'done':''}"><b>${s>=m.d?'✓':m.d}</b>${s>=m.d?m.l:'Tage'}</div>`).join('');
   const banner=fresh.length?`<div class="msbanner"><div class="b1">${MS.find(m=>m.d===Math.max(...fresh)).l} geschafft.</div><div class="b2">${Math.max(...fresh)} Tage am Stück.${S.reward?' Eingelöst: '+esc(S.reward)+'.':' Zeit, dir etwas einzulösen.'}</div></div>`:'';
   const next=MS.find(m=>s<m.d);
-  if(!next)return banner+`<h2 class="wsect">Alle Meilensteine geknackt</h2><p class="wsub2">Ein Jahr durch. Du bist kein Mensch mehr, der da hingeht.</p><div class="card">${`<div class="msrow">${cards}</div>`}</div>`;
+  if(!next)return banner+`<h2 class="wsect">Alle Meilensteine geknackt</h2><p class="wsub2">Ein Jahr geschafft. Dieses Muster hast du deutlich verändert.</p><div class="card">${`<div class="msrow">${cards}</div>`}</div>`;
   return `${banner}<h2 class="wsect">Nächster Meilenstein</h2><p class="wsub2">Meilensteine zahlen aus, nicht einzelne Tage.</p>
     <div class="card"><h3>${next.l} — noch ${next.d-s} ${next.d-s===1?'Tag':'Tage'}</h3>
       <div class="mstrack"><i style="width:${Math.max(Math.round(s/next.d*100),2)}%"></i></div>
-      <p class="cs" style="margin:0">${S.reward?`Deine Belohnung dafür: <b style="color:var(--label)">${esc(S.reward)}</b>`:'Trag in den Einstellungen ein, was du dir dafür gönnst. Unbelohnte Streaks reißen schneller.'}</p>
+      <p class="cs" style="margin:0">${S.reward?`Deine Belohnung dafür: <b style="color:var(--label)">${esc(S.reward)}</b>`:'Wenn dich eine konkrete Belohnung motiviert, trag sie hier ein.'}</p>
       <div class="msrow">${cards}</div></div>`;
 }
 function showWin(t){
   transitionFlow(FLOW.GREEN_ROOM);
-  const s=streak(),kg30=t.kcal*104*30/7700;
+  const s=streak();
   $('#wininner').innerHTML=`
     <div class="winnav">Behalten</div>
     <h1 class="wt">Behalten.<br><em>Alles davon.</em></h1>
-    <p class="wsub">Du hast gerade <b>${fmt(t.kcal)} kcal</b> und <b>${eur(t.p)}</b> nicht ausgegeben. Zwischen den beiden Knöpfen lag eine Sekunde. Zwischen den Ergebnissen liegen dreißig Jahre.</p>
+    <p class="wsub">Du hast diese Bestellung gerade abgebrochen: <b>${fmt(t.kcal)} kcal</b> in dieser Bestellung · <b>${eur(t.p)}</b> Referenzpreis.</p>
+    <p class="wsub2">Was du später isst oder ausgibst, weiß die App nicht.</p>
     <div class="chips"><span class="chip">${s===0?'Neustart heute':s+' '+(s===1?'Tag':'Tage')+' am Stück'}</span><span class="chip dark">${S.saves}. Abbruch</span></div>
 
-    <h2 class="wsect">Aus ${eur(t.p)} wird Geld, das arbeitet</h2>
-    <p class="wsub2">Einmalanlage, ${pctTxt()} % p. a. nominal</p>
+    <h2 class="wsect">Wenn du ${eur(t.p)} stattdessen anlegst</h2>
+    <p class="wsub2">Rechenbeispiel bei ${pctTxt()} % p. a. nominal</p>
     <div class="card">${[10,20,30].map(n=>`<div class="lrow"><span class="y">in ${n} Jahren</span><span class="a">${eur(fvOnce(t.p,n))}</span></div>`).join('')}</div>
 
-    <h2 class="wsect">Und wenn du dabei bleibst</h2>
-    <p class="wsub2">${eur(t.p)} zweimal pro Woche stattdessen angelegt — ${eur(t.p*104/12)} im Monat</p>
+    <h2 class="wsect">Wenn dieses Muster regelmäßig vorkäme</h2>
+    <p class="wsub2">Rechenbeispiel: 2 vergleichbare Bestellungen pro Woche · ${eur(t.p*104/12)} im Monat</p>
     <div class="moneycard"><div class="n">${eur0(fvHabit(t.p,30))}</div>
       <div class="t">nach 30 Jahren. Eingezahlt hast du davon nur <b>${eur0(t.p*104*30)}</b> — der Rest ist Zinseszins.<br>Nach 10 Jahren: <b>${eur0(fvHabit(t.p,10))}</b> · nach 20: <b>${eur0(fvHabit(t.p,20))}</b></div></div>
 
-    <h2 class="wsect">Beides wächst exponentiell</h2>
-    <p class="wsub2">Nur eins davon gehört dir</p>
-    <div class="card chartcard">${butterfly(t)}
-      <div class="clegend"><span>Depot, wenn du anlegst</span><span>Körperfett, wenn nicht</span></div></div>
-    <p class="wnote">Die rote Kurve ist die freundliche Version: der Körper bremst die Zunahme irgendwann selbst ab. Beim Geld bremst nichts — in beide Richtungen. ${kg30>=10?`Die ${kg30.toFixed(0)} kg wirst du so nie ansetzen. Die ${eur0(fvHabit(t.p,30))} kannst du wirklich haben.`:''}</p>
-
-    <h2 class="wsect">Was dein Körper daraus macht</h2>
-    <p class="wsub2">wenn aus dem einen Abbruch eine Gewohnheit wird</p>
-    <div class="card">
-      <div class="wstep"><div class="wk">Tage</div><div class="wx">Weniger Natrium, weniger eingelagertes Wasser. <b>Der Blutdruck reagiert auf reduzierte Salzzufuhr innerhalb von Tagen bis Wochen.</b></div></div>
-      <div class="wstep"><div class="wk">2–4 Wochen</div><div class="wx">Weniger gesättigtes Fett senkt das <b>LDL messbar</b> — in diesem Zeitfenster sieht man es im Blutbild.</div></div>
-      <div class="wstep"><div class="wk">3 Monate</div><div class="wx">Schon <b>rund 5 % weniger Körpergewicht</b> senken den Fettgehalt der Leber deutlich. Einer der am besten umkehrbaren Schäden überhaupt.</div></div>
-      <div class="wstep"><div class="wk">1 Jahr</div><div class="wx"><b>104 Mahlzeiten</b>, die nie passiert sind — und ${eur0(fvHabit(t.p,1))} im Depot statt im Papierkorb.</div></div>
+    <h2 class="wsect">Was du gerade verändert hast</h2>
+    <p class="wsub2">Keine Prognose. Nur diese Entscheidung.</p>
+    <div class="kpis" style="margin-top:10px">
+      <div class="kpi"><div class="n">${fmt(t.kcal)}</div><div class="l">Bestellung abgebrochen · kcal in dieser Bestellung</div></div>
+      <div class="kpi"><div class="n">${eur(t.p)}</div><div class="l">nicht für diese Bestellung ausgegeben</div></div>
     </div>
+
+    <h2 class="wsect">Warum das Muster trotzdem zählt</h2>
+    <p class="wsub2">Langfristig zählt nicht diese eine Mahlzeit, sondern was regelmäßig daraus wird.</p>
+    <div class="card evidencecopy">
+      <p>Eine dauerhaft niedrigere Natriumzufuhr kann den Blutdruck senken – besonders bei Menschen mit erhöhtem Blutdruck.</p>
+      <p>Gesättigte Fette durch ungesättigte Fette zu ersetzen kann das LDL-Cholesterin senken.</p>
+      <p>Bei Menschen mit Fettleber kann nachhaltiger Gewichtsverlust den Fettgehalt der Leber reduzieren.</p>
+    </div>
+    <p class="wnote">Das sind allgemeine Befunde aus Studien und keine Vorhersage für dich oder für diese einzelne Mahlzeit.</p>
 
     ${msBlock()}
 
     <h2 class="wsect">Deine Bilanz bisher</h2>
     <div class="kpis" style="margin-top:10px">
       <div class="kpi"><div class="n">${S.saves}</div><div class="l">mal die rote Seite geschlossen</div></div>
-      <div class="kpi"><div class="n">${fmt(S.kcalAvoided)}</div><div class="l">kcal nie gegessen</div></div>
+      <div class="kpi"><div class="n">${fmt(S.kcalAvoided)}</div><div class="l">kcal aus abgebrochenen Bestellungen</div></div>
       <div class="kpi"><div class="n">${eur(S.euroSaved)}</div><div class="l">nicht ausgegeben</div></div>
       <div class="kpi"><div class="n">${eur0(fvOnce(S.euroSaved,20))}</div><div class="l">daraus in 20 Jahren</div></div>
     </div>
